@@ -14,6 +14,11 @@ Parser::Parser(std::string filename) {
 			sscanf(line.c_str(), "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
 			this->vertices.push_back(vertex);
 		}
+		if (line[0] == 'f' && line[1] == ' ') {
+			t_face face;
+			sscanf(line.c_str(), "f %d %d %d %d", &face.v1, &face.v2, &face.v3, &face.v4);
+			this->faces.push_back(face);
+		}
 	}
 	file.close();
 }
@@ -22,4 +27,8 @@ Parser::~Parser() {}
 
 std::vector<t_vertex> Parser::getVertices() {
 	return this->vertices;
+}
+
+std::vector<t_face> Parser::getFaces() {
+	return this->faces;
 }
