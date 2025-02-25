@@ -84,6 +84,9 @@ std::vector<GLuint> loadEBO(std::vector<t_face> faces) {
 	return indices;
 }
 
+
+//Maybe put every vertices in the correct order directly before sending them into the vertex buffer data
+
 int main(int ac, char **av) {
 
 	if (ac != 2) {
