@@ -10,9 +10,11 @@ Parser::Parser(std::string filename) {
 	}
 	while (std::getline(file, line)) {
 		if (line[0] == 'v' && line[1] == ' ') {
-			t_vertex vertex;
-			sscanf(line.c_str(), "v %f %f %f", &vertex.x, &vertex.y, &vertex.z);
-			this->vertices.push_back(vertex);
+			GLfloat x,y,z;
+			sscanf(line.c_str(), "v %f %f %f", &x, &y, &z);
+			this->vertices.push_back(x);
+			this->vertices.push_back(y);
+			this->vertices.push_back(z);
 		}
 		if (line[0] == 'f' && line[1] == ' ') {
 			t_face face;
@@ -25,7 +27,7 @@ Parser::Parser(std::string filename) {
 
 Parser::~Parser() {}
 
-std::vector<t_vertex> Parser::getVertices() {
+std::vector<GLfloat> Parser::getVertices() {
 	return this->vertices;
 }
 

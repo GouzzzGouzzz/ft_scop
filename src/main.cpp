@@ -6,6 +6,16 @@ double lastX = 0.0;
 double lastY = 0.0;
 bool isRightDrag = false;
 
+GL_GENBUFFERS glGenBuffers = nullptr;
+GL_BINDBUFFER glBindBuffer = nullptr;
+GL_BUFFERDATA glBufferData = nullptr;
+GL_GENVERTEXARRAYS glGenVertexArrays = nullptr;
+GL_BINDVERTEXARRAY glBindVertexArray = nullptr;
+GL_VERTEXATTRIBPOINTER glVertexAttribPointer = nullptr;
+GL_ENABLEVERTEXATTRIBARRAY glEnableVertexAttribArray = nullptr;
+GL_DISABLEVERTEXATTRIBARRAY glDisableVertexAttribArray = nullptr;
+
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
@@ -31,10 +41,47 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 
 		lastX = xpos;
 		lastY = ypos;
-		std::cout << "deltaX: " << deltaX << " deltaY: " << deltaY << std::endl;
 		glRotatef(-deltaX * 0.2f, 0.0f, 1.0f, 0.0f);
 		glRotatef(-deltaY * 0.2f, 1.0f, 0.0f, 0.0f);
 	}
+}
+
+void LoadOpenGLFunctions() {
+	glGenBuffers = (GL_GENBUFFERS)glXGetProcAddress((const GLubyte*)"glGenBuffers");
+	glBindBuffer = (GL_BINDBUFFER)glXGetProcAddress((const GLubyte*)"glBindBuffer");
+	glBufferData = (GL_BUFFERDATA)glXGetProcAddress((const GLubyte*)"glBufferData");
+	glGenVertexArrays = (GL_GENVERTEXARRAYS)glXGetProcAddress((const GLubyte*)"glGenVertexArrays");
+	glBindVertexArray = (GL_BINDVERTEXARRAY)glXGetProcAddress((const GLubyte*)"glBindVertexArray");
+	glVertexAttribPointer = (GL_VERTEXATTRIBPOINTER)glXGetProcAddress((const GLubyte*)"glVertexAttribPointer");
+	glEnableVertexAttribArray = (GL_ENABLEVERTEXATTRIBARRAY)glXGetProcAddress((const GLubyte*)"glEnableVertexAttribArray");
+	glDisableVertexAttribArray = (GL_DISABLEVERTEXATTRIBARRAY)glXGetProcAddress((const GLubyte*)"glDisableVertexAttribArray");
+
+}
+
+void init(GLFWwindow* window)
+{
+	glfwMakeContextCurrent(window);
+	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+	glfwSetCursorPosCallback(window, mouse_motion_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSwapInterval(1);
+	LoadOpenGLFunctions();
+}
+
+std::vector<GLuint> loadEBO(std::vector<t_face> faces) {
+	std::vector<GLuint> indices;
+	int i = 0;
+	for (std::vector<t_face>::iterator it = faces.begin(); it != faces.end(); it++) {
+		indices.push_back(it->v1 - 1);
+		indices.push_back(it->v2 - 1);
+		indices.push_back(it->v3 - 1);
+		if (it->v4 != 0) {
+			indices.push_back(it->v1 - 1);
+			indices.push_back(it->v3 - 1);
+			indices.push_back(it->v4 - 1);
+		}
+	}
+	return indices;
 }
 
 int main(int ac, char **av) {
@@ -56,7 +103,7 @@ int main(int ac, char **av) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	Parser parser(filename);
-	std::vector<t_vertex> vertices = parser.getVertices();
+	std::vector<GLfloat> vertices = parser.getVertices();
 	std::vector<t_face> faces = parser.getFaces();
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -69,30 +116,62 @@ int main(int ac, char **av) {
 		glfwTerminate();
 		return -1;
 	}
+	init(window);
 
-	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-	glfwSetCursorPosCallback(window, mouse_motion_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	GLuint VertexArrayID;
+	glGenVertexArrays(1, &VertexArrayID);
+	glBindVertexArray(VertexArrayID);
 
-	while (!glfwWindowShouldClose(window)) {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glBegin(GL_TRIANGLES);
-		for (std::vector<t_face>::iterator it = faces.begin(); it != faces.end(); it++) {
-			glVertex3f(vertices[it->v1 - 1].x, vertices[it->v1 - 1].y, vertices[it->v1 - 1].z);
-			glVertex3f(vertices[it->v2 - 1].x, vertices[it->v2 - 1].y, vertices[it->v2 - 1].z);
-			glVertex3f(vertices[it->v3 - 1].x, vertices[it->v3 - 1].y, vertices[it->v3 - 1].z);
-			if (it->v4 != 0) {
-				glVertex3f(vertices[it->v1 - 1].x, vertices[it->v1 - 1].y, vertices[it->v1 - 1].z);
-				glVertex3f(vertices[it->v3 - 1].x, vertices[it->v3 - 1].y, vertices[it->v3 - 1].z);
-				glVertex3f(vertices[it->v4 - 1].x, vertices[it->v4 - 1].y, vertices[it->v4 - 1].z);
-			}
-		}
-		glEnd();
+	//triangle
+	GLuint vertexbuffer;
+	// Generate 1 buffer, put the resulting identifier in vertexbuffer
+	glGenBuffers(1, &vertexbuffer);
+	// The following commands will talk about our 'vertexbuffer' buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+	// Give our vertices to OpenGL.
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	std::cout << vertices.size() / 3 << std::endl;
+	while (glfwWindowShouldClose(window) == 0)
+	{
+		glClear( GL_COLOR_BUFFER_BIT );
+		glColor3f(1.0f, 0.0f, 0.0f);
+
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(
+		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+		3,                  // size
+		GL_FLOAT,           // type
+		GL_FALSE,           // normalized?
+		0,                  // stride
+		(void*)0            // array buffer offset
+		);
+		// glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
+		glDisableVertexAttribArray(0);
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
