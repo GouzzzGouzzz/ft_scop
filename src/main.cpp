@@ -70,7 +70,6 @@ void init(GLFWwindow* window)
 
 std::vector<GLuint> loadEBO(std::vector<t_face> faces) {
 	std::vector<GLuint> indices;
-	int i = 0;
 	for (std::vector<t_face>::iterator it = faces.begin(); it != faces.end(); it++) {
 		indices.push_back(it->v1 - 1);
 		indices.push_back(it->v2 - 1);
@@ -120,7 +119,17 @@ int main(int ac, char **av) {
 		return -1;
 	}
 	init(window);
+	// glMatrixMode(GL_PROJECTION);
+	// glLoadIdentity();
+	// glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 100.0); // Left, Right, Bottom, Top, Near, Far
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0); // Set perspective projection
 
+	// Switch to ModelView Matrix (VERY IMPORTANT!)
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(0.0f, 0.0f, -3.0f);
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -133,7 +142,6 @@ int main(int ac, char **av) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-	std::cout << vertices.size() / 3 << std::endl;
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear( GL_COLOR_BUFFER_BIT );
