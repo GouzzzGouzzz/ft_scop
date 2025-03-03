@@ -4,10 +4,14 @@ CXXFLAGS=-g #-Wall -Werror -Wextra
 CXXLINKFLAGS=-lglfw -lGL
 OBJ_DIR=obj
 SRC_DIR=src
-FILES=src/main.cpp\
-	src/parser.cpp\
+FILES=main.cpp\
+	parser.cpp\
+	loadShader.cpp\
+	glFunctions.cpp\
 
-OBJ=$(FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+
+SRC=$(FILES:%=$(SRC_DIR)/%.cpp)
+OBJ=$(FILES:%.cpp=$(OBJ_DIR)/%.o)
 
 all: $(NAME)
 

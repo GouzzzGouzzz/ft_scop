@@ -3,8 +3,8 @@
 //Glfw headers, used for the iwindow and the event handling
 #include <GLFW/glfw3.h>
 
-//OpenGL linux headers used to load the OpenGL functions manually
-#include <GL/glx.h>
+//My OpenGL headers to load the functions
+#include "glFunction.hpp"
 
 //Standard includes
 #include <fstream>
@@ -18,12 +18,5 @@ typedef struct s_face {
 	int v4;
 } t_face;
 
-//Since we can't use GLAD and GLEW, i will manually load every function
-typedef void (*GL_GENBUFFERS)(GLsizei, GLuint*);
-typedef void (*GL_BINDBUFFER)(GLenum, GLuint);
-typedef void (*GL_BUFFERDATA)(GLenum, GLsizeiptr, const void*, GLenum);
-typedef void (*GL_GENVERTEXARRAYS)(GLsizei, GLuint*);
-typedef void (*GL_BINDVERTEXARRAY)(GLuint);
-typedef void (*GL_VERTEXATTRIBPOINTER)(GLuint, GLint, GLenum, GLboolean, GLsizei, const void*);
-typedef void (*GL_ENABLEVERTEXATTRIBARRAY)(GLuint);
-typedef void (*GL_DISABLEVERTEXATTRIBARRAY)(GLuint);
+GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
+

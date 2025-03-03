@@ -6,16 +6,6 @@ double lastX = 0.0;
 double lastY = 0.0;
 bool isRightDrag = false;
 
-GL_GENBUFFERS glGenBuffers = nullptr;
-GL_BINDBUFFER glBindBuffer = nullptr;
-GL_BUFFERDATA glBufferData = nullptr;
-GL_GENVERTEXARRAYS glGenVertexArrays = nullptr;
-GL_BINDVERTEXARRAY glBindVertexArray = nullptr;
-GL_VERTEXATTRIBPOINTER glVertexAttribPointer = nullptr;
-GL_ENABLEVERTEXATTRIBARRAY glEnableVertexAttribArray = nullptr;
-GL_DISABLEVERTEXATTRIBARRAY glDisableVertexAttribArray = nullptr;
-
-
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
@@ -44,18 +34,6 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		glRotatef(-deltaX * 0.2f, 0.0f, 1.0f, 0.0f);
 		glRotatef(-deltaY * 0.2f, 1.0f, 0.0f, 0.0f);
 	}
-}
-
-void LoadOpenGLFunctions() {
-	glGenBuffers = (GL_GENBUFFERS)glXGetProcAddress((const GLubyte*)"glGenBuffers");
-	glBindBuffer = (GL_BINDBUFFER)glXGetProcAddress((const GLubyte*)"glBindBuffer");
-	glBufferData = (GL_BUFFERDATA)glXGetProcAddress((const GLubyte*)"glBufferData");
-	glGenVertexArrays = (GL_GENVERTEXARRAYS)glXGetProcAddress((const GLubyte*)"glGenVertexArrays");
-	glBindVertexArray = (GL_BINDVERTEXARRAY)glXGetProcAddress((const GLubyte*)"glBindVertexArray");
-	glVertexAttribPointer = (GL_VERTEXATTRIBPOINTER)glXGetProcAddress((const GLubyte*)"glVertexAttribPointer");
-	glEnableVertexAttribArray = (GL_ENABLEVERTEXATTRIBARRAY)glXGetProcAddress((const GLubyte*)"glEnableVertexAttribArray");
-	glDisableVertexAttribArray = (GL_DISABLEVERTEXATTRIBARRAY)glXGetProcAddress((const GLubyte*)"glDisableVertexAttribArray");
-
 }
 
 void init(GLFWwindow* window)
@@ -112,7 +90,7 @@ int main(int ac, char **av) {
 	const std::vector<GLfloat>& vertices = parser.getVertices();
 	const std::vector<t_face>& faces = parser.getFaces();
 	if (!glfwInit()) {
-		std::cerr << "Failed to initialize GLFW" << std::endl;
+		std::cerr << "Failed to initialize GLFW or OpenGl Functions" << std::endl;
 		return -1;
 	}
 
@@ -126,7 +104,7 @@ int main(int ac, char **av) {
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0); // Set perspective projection
+	glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -135,28 +113,25 @@ int main(int ac, char **av) {
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
 
-	//triangle
 	GLuint vertexbuffer;
-	// Generate 1 buffer, put the resulting identifier in vertexbuffer
 	glGenBuffers(1, &vertexbuffer);
-	// The following commands will talk about our 'vertexbuffer' buffer
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-	int offset = 0;
+	//Shader implemtation
+	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 	while (glfwWindowShouldClose(window) == 0)
 	{
-		glClear( GL_COLOR_BUFFER_BIT );
-
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(programID);
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
-		0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
+		0,
+		3,			// size
+		GL_FLOAT,	// type
+		GL_FALSE,	// normalized?
+		0,			// stride
+		(void*)0	// array buffer offset
 		);
 		// glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
