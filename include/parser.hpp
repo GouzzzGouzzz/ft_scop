@@ -1,3 +1,6 @@
+#pragma once
+
+
 #include "../include/scop.hpp"
 
 class Parser {

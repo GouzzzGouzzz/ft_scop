@@ -8,6 +8,7 @@ FILES=main.cpp\
 	parser.cpp\
 	loadShader.cpp\
 	glFunctions.cpp\
+	matrix.cpp\
 
 
 SRC=$(FILES:%=$(SRC_DIR)/%.cpp)

@@ -3,7 +3,7 @@
 #include <GL/glx.h>
 
 //Since we can't use GLAD and GLEW, i will manually load every function
-//OpenGl VAOs and VBOs functions
+//OpenGl VAOs functions
 typedef void (*GL_GENBUFFERS)(GLsizei, GLuint*);
 typedef void (*GL_BINDBUFFER)(GLenum, GLuint);
 typedef void (*GL_BUFFERDATA)(GLenum, GLsizeiptr, const void*, GLenum);
@@ -28,7 +28,7 @@ typedef void (*GL_USEPROGRAM)(GLuint);
 typedef void (*GL_DETACHSHADER)(GLuint, GLuint);
 typedef void (*GL_DELETESHADER)(GLuint);
 
-//Var to VAOS and VBOs functions
+//Var to VAOS functions
 extern GL_GENBUFFERS glGenBuffers;
 extern GL_BINDBUFFER glBindBuffer;
 extern GL_BUFFERDATA glBufferData;

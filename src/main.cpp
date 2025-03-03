@@ -28,7 +28,6 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 	{
 		double deltaX = xpos - lastX;
 		double deltaY = ypos - lastY;
-
 		lastX = xpos;
 		lastY = ypos;
 		glRotatef(-deltaX * 0.2f, 0.0f, 1.0f, 0.0f);
@@ -89,6 +88,30 @@ int main(int ac, char **av) {
 	}
 	const std::vector<GLfloat>& vertices = parser.getVertices();
 	const std::vector<t_face>& faces = parser.getFaces();
+
+
+
+
+
+
+
+
+
+	Matrix4 m(1.0f, 1.0f, 1.0f, 1.0f);
+	m.Translate(10.0f, 0.0f, 0.0f);
+	std::vector<float> vec = {10.0f, 10.0f, 10.0f, 1.0f};
+	std::vector<float> res = m * vec;
+	for (std::vector<float>::iterator it = res.begin(); it != res.end(); it++) {
+		std::cout << *it << " ";
+	}
+
+
+
+	return 1;
+
+
+
+
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW or OpenGl Functions" << std::endl;
 		return -1;
