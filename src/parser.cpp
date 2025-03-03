@@ -1,5 +1,4 @@
 #include "../include/parser.hpp"
-#include <sstream>
 
 Parser::Parser(std::string filename) {
 	std::string line;

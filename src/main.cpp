@@ -102,8 +102,8 @@ int main(int ac, char **av) {
 		return -1;
 	}
 
-	// glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	Parser parser(filename);
 	if (parser.failed) {
 		std::cerr << "Failed to parse file" << std::endl;
