@@ -102,11 +102,15 @@ int main(int ac, char **av) {
 		return -1;
 	}
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	// glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	// glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	Parser parser(filename);
-	std::vector<GLfloat> vertices = parser.getVertices();
-	std::vector<t_face> faces = parser.getFaces();
+	if (parser.failed) {
+		std::cerr << "Failed to parse file" << std::endl;
+		return -1;
+	}
+	const std::vector<GLfloat>& vertices = parser.getVertices();
+	const std::vector<t_face>& faces = parser.getFaces();
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW" << std::endl;
 		return -1;
@@ -119,14 +123,11 @@ int main(int ac, char **av) {
 		return -1;
 	}
 	init(window);
-	// glMatrixMode(GL_PROJECTION);
-	// glLoadIdentity();
-	// glFrustum(-1.0, 1.0, -1.0, 1.0, 1.5, 100.0); // Left, Right, Bottom, Top, Near, Far
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0); // Set perspective projection
 
-	// Switch to ModelView Matrix (VERY IMPORTANT!)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0.0f, 0.0f, -3.0f);
@@ -142,10 +143,10 @@ int main(int ac, char **av) {
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	// Give our vertices to OpenGL.
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+	int offset = 0;
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear( GL_COLOR_BUFFER_BIT );
-		glColor3f(1.0f, 0.0f, 0.0f);
 
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -164,27 +165,6 @@ int main(int ac, char **av) {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	glfwDestroyWindow(window);
 	glfwTerminate();
-	return 0;
 }

@@ -4,8 +4,9 @@ class Parser {
 	public:
 		Parser(std::string filename);
 		~Parser();
-		std::vector<GLfloat> getVertices();
-		std::vector<t_face> getFaces();
+		const std::vector<GLfloat>& getVertices() const;
+		const std::vector<t_face>& getFaces() const;
+		bool failed;
 	private:
 		void sort_vertices_by_faces();
 		std::vector<GLfloat> vertices;

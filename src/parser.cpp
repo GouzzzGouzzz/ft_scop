@@ -1,13 +1,16 @@
 #include "../include/parser.hpp"
+#include <sstream>
 
 Parser::Parser(std::string filename) {
 	std::string line;
 	std::ifstream file(filename);
-
+	this->failed = false;
 	if (!file.is_open()) {
 		std::cerr << "Failed to open file" << std::endl;
+		this->failed = true;
 		return ;
 	}
+
 	while (std::getline(file, line)) {
 		if (line[0] == 'v' && line[1] == ' ') {
 			GLfloat x,y,z;
@@ -33,7 +36,8 @@ Parser::Parser(std::string filename) {
 void Parser::sort_vertices_by_faces() {
 	std::vector<GLfloat> sorted_vertices;
 	int index;
-	int test=0;
+
+	sorted_vertices.reserve(this->vertices.size());
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
 		index = (it->v1- 1) * 3;
 		sorted_vertices.push_back(this->vertices[index]);
@@ -48,7 +52,6 @@ void Parser::sort_vertices_by_faces() {
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		if (it->v4 != 0) {
-			test++;
 			index = (it->v1- 1) * 3;
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
@@ -70,10 +73,10 @@ void Parser::sort_vertices_by_faces() {
 
 Parser::~Parser() {}
 
-std::vector<GLfloat> Parser::getVertices() {
+const std::vector<GLfloat>& Parser::getVertices() const {
 	return this->vertices;
 }
 
-std::vector<t_face> Parser::getFaces() {
+const std::vector<t_face>& Parser::getFaces() const{
 	return this->faces;
 }
