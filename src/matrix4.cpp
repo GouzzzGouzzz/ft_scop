@@ -120,13 +120,11 @@ void Matrix4::identity(){
 //Used to calculate the view matrix
 //https://stackoverflow.com/questions/19740463/lookat-function-im-going-crazy/19740748
 void Matrix4::view(Vector3 eye, Vector3 center, Vector3 up){
-	Matrix4 res;
-
 	Vector3 lookDirection;
 	Vector3 right;
 	Vector3 pre_f;
 	pre_f.x = center.x - eye.x;
-	pre_f.x = center.x - eye.x;
+	pre_f.y = center.y - eye.y;
 	pre_f.z = center.z - eye.z;
 
 	lookDirection  = normalize(pre_f);
@@ -134,18 +132,18 @@ void Matrix4::view(Vector3 eye, Vector3 center, Vector3 up){
 	right = normalize(cross(lookDirection, up));
 	up = cross(right, lookDirection);
 
-	res.m[0][0] = right.x;
-	res.m[1][0] = right.y;
-	res.m[2][0] = right.z;
-	res.m[0][1] = up.x;
-	res.m[1][1] = up.y;
-	res.m[2][1] = up.z;
-	res.m[0][2] =-lookDirection.x;
-	res.m[1][2] =-lookDirection.y;
-	res.m[2][2] =-lookDirection.z;
-	res.m[3][0] =-dot(right, eye);
-	res.m[3][1] =-dot(up, eye);
-	res.m[3][2] = dot(lookDirection, eye);
+	m[0][0] = right.x;
+	m[1][0] = right.y;
+	m[2][0] = right.z;
+	m[0][1] = up.x;
+	m[1][1] = up.y;
+	m[2][1] = up.z;
+	m[0][2] =-lookDirection.x;
+	m[1][2] =-lookDirection.y;
+	m[2][2] =-lookDirection.z;
+	m[3][0] =-dot(right, eye);
+	m[3][1] =-dot(up, eye);
+	m[3][2] = dot(lookDirection, eye);
 }
 
 //Set the matrix value with a vector of size 16

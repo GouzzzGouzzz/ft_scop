@@ -118,10 +118,19 @@ int main(int ac, char **av) {
 
 	// Matrix4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
 	// ModelMatrix.print();
+
+	Matrix4 Model;
 	Matrix4 Projetction;
-	
+
 	Matrix4 View;
-	View.view(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f));
+	View.view(Vector3(5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
+	View.print();
+	std::cout << std::endl;
+	View.view(Vector3(0.0f, 0.0f, -5.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
+	View.print();
+	std::cout << std::endl;
+	View.view(Vector3(0.0f, 0.0f, 5.0f), Vector3(10.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
+	View.print();
 
 	return 1;
 
