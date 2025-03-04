@@ -120,7 +120,8 @@ int main(int ac, char **av) {
 	// ModelMatrix.print();
 
 	Matrix4 Model;
-	Matrix4 Projetction;
+	Matrix4 Projection;
+	Projection.projection();
 
 	Matrix4 View;
 	View.view(Vector3(5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
@@ -132,6 +133,7 @@ int main(int ac, char **av) {
 	View.view(Vector3(0.0f, 0.0f, 5.0f), Vector3(10.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
 	View.print();
 
+	Matrix4 MVP = Projection * View * Model;
 	return 1;
 
 
