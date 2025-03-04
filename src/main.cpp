@@ -92,20 +92,36 @@ int main(int ac, char **av) {
 
 
 
+	// Matrix4 TranslationMatrix;
+	// TranslationMatrix.setValue(std::array<float, 16>{
+	// 	1, 0, 0, 3,
+	// 	0, 1, 0, 2,
+	// 	0, 0, 1, 5,
+	// 	0, 0, 0, 1
+	// });
 
+	// Matrix4 RotationMatrix;
+	// RotationMatrix.setValue(std::array<float, 16>{
+	// 	0, -1, 0, 0,
+	// 	1,  0, 0, 0,
+	// 	0,  0, 1, 0,
+	// 	0,  0, 0, 1
+	// });
 
+	// Matrix4 ScaleMatrix;
+	// ScaleMatrix.setValue(std::array<float, 16>{
+	// 	2, 0, 0, 0,
+	// 	0, 3, 0, 0,
+	// 	0, 0, 0.5, 0,
+	// 	0, 0, 0, 1
+	// });
 
-
-
-	Matrix4 m(1.0f, 1.0f, 1.0f, 1.0f);
-	m.Translate(10.0f, 0.0f, 0.0f);
-	std::vector<float> vec = {10.0f, 10.0f, 10.0f, 1.0f};
-	std::vector<float> res = m * vec;
-	for (std::vector<float>::iterator it = res.begin(); it != res.end(); it++) {
-		std::cout << *it << " ";
-	}
-
-
+	// Matrix4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
+	// ModelMatrix.print();
+	Matrix4 Projetction;
+	
+	Matrix4 View;
+	View.view(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 1.0f), Vector3(0.0f, 1.0f, 0.0f));
 
 	return 1;
 

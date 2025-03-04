@@ -1,7 +1,5 @@
 #pragma once
-#include <vector>
-#include "../include/scop.hpp"
-#include <math.h>
+#include "../include/moreMath.hpp"
 
 class Matrix4{
 	public:
@@ -11,13 +9,14 @@ class Matrix4{
 		~Matrix4();
 		Matrix4 operator*(const Matrix4& mat) const;
 		std::vector<float> operator*(const std::vector<float>& vec) const;
-		void Identity();
-		void Translate(float x, float y, float z);
-		void Scale(float x, float y, float z);
-		void RotateX(float angle);
-		void RotateY(float angle);
-		void RotateZ(float angle);
-		void setValue(const std::vector<float> vec);
+		void identity();
+		void translate(float x, float y, float z);
+		void scale(float x, float y, float z);
+		void rotateX(float angle);
+		void rotateY(float angle);
+		void rotateZ(float angle);
+		void view(Vector3 eye, Vector3 center, Vector3 up);
+		void setValue(const std::array<float, 16> vec);
 		void print() const;
 	private:
 		float m[4][4];
