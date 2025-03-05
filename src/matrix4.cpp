@@ -146,6 +146,24 @@ void Matrix4::view(Vector3 eye, Vector3 center, Vector3 up){
 	m[3][2] = dot(lookDirection, eye);
 }
 
+
+// https://github.com/g-truc/glm/blob/0.9.5/glm/gtc/matrix_transform.inl#L207-L229
+//Use degree as input for fovy
+void Matrix4::perspective(const float fovy, const float aspect, const float zNear, const float zFar)
+{
+	if (aspect == 0 || zFar == zNear)
+		return ;
+	//Might need to change to convert to rad if fovy is radian
+	const float rad = fovy;
+	const float tanHalfFovy = tan(rad / 2);
+
+	m[0][0] = 1 / (aspect * tanHalfFovy);
+	m[1][1] = 1 / (tanHalfFovy);
+	m[2][2] = -(zFar + zNear) / (zFar - zNear);
+	m[2][3] = -1;
+	m[3][2] = - (2 * zFar * zNear) / (zFar - zNear);
+}
+
 //Set the matrix value with a vector of size 16
 void Matrix4::setValue(const std::array<float, 16> vec) {
 	if (vec.size() != 16) {
@@ -157,6 +175,10 @@ void Matrix4::setValue(const std::array<float, 16> vec) {
 			m[i][j] = vec[i * 4 + j];
 		}
 	}
+}
+
+std::array<std::array<float, 4>, 4> Matrix4::getMatrix() const{
+	return m;
 }
 
 void Matrix4::print() const {

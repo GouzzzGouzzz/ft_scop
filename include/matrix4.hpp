@@ -16,9 +16,10 @@ class Matrix4{
 		void rotateY(float angle);
 		void rotateZ(float angle);
 		void view(Vector3 eye, Vector3 center, Vector3 up);
-		void projection();
+		void perspective(const float fovy, const float aspect, const float zNear, const float zFar);
 		void setValue(const std::array<float, 16> vec);
+		std::array<std::array<float, 4>, 4> getMatrix() const;
 		void print() const;
 	private:
-		float m[4][4];
+		std::array<std::array<float, 4>, 4> m;
 };

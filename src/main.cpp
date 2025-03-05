@@ -90,50 +90,19 @@ int main(int ac, char **av) {
 	const std::vector<t_face>& faces = parser.getFaces();
 
 
-
-
-	// Matrix4 TranslationMatrix;
-	// TranslationMatrix.setValue(std::array<float, 16>{
-	// 	1, 0, 0, 3,
-	// 	0, 1, 0, 2,
-	// 	0, 0, 1, 5,
-	// 	0, 0, 0, 1
-	// });
-
-	// Matrix4 RotationMatrix;
-	// RotationMatrix.setValue(std::array<float, 16>{
-	// 	0, -1, 0, 0,
-	// 	1,  0, 0, 0,
-	// 	0,  0, 1, 0,
-	// 	0,  0, 0, 1
-	// });
-
-	// Matrix4 ScaleMatrix;
-	// ScaleMatrix.setValue(std::array<float, 16>{
-	// 	2, 0, 0, 0,
-	// 	0, 3, 0, 0,
-	// 	0, 0, 0.5, 0,
-	// 	0, 0, 0, 1
-	// });
-
-	// Matrix4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
-	// ModelMatrix.print();
-
-	Matrix4 Model;
 	Matrix4 Projection;
-	Projection.projection();
-
 	Matrix4 View;
-	View.view(Vector3(5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
-	View.print();
-	std::cout << std::endl;
-	View.view(Vector3(0.0f, 0.0f, -5.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
-	View.print();
-	std::cout << std::endl;
-	View.view(Vector3(0.0f, 0.0f, 5.0f), Vector3(10.0f, 0.0f, 0.0f), Vector3(0.0f, 1.0f, 0.0f));
-	View.print();
+	Matrix4 Model;
+
+	Projection.perspective(45.0f, W_WIDTH/W_HEIGHT, 0.1f, 100.0f);
+	View.view(Vector3(4,3,3), Vector3(0,0,0), Vector3(0,1,0));
+	Model.identity();
 
 	Matrix4 MVP = Projection * View * Model;
+
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, MVP.getMatrix().data());
+
 	return 1;
 
 
@@ -144,7 +113,7 @@ int main(int ac, char **av) {
 		return -1;
 	}
 
-	GLFWwindow* window = glfwCreateWindow(900, 900, "ft_scop", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(W_WIDTH, W_HEIGHT, "ft_scop", NULL, NULL);
 	if (!window) {
 		std::cerr << "Failed to create window" << std::endl;
 		glfwTerminate();

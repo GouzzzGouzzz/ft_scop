@@ -18,5 +18,9 @@
 #include "moreMath.hpp"
 #include "matrix4.hpp"
 
+//Define the window size
+#define W_WIDTH 900
+#define W_HEIGHT 900
+
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 
