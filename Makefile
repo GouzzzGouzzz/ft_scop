@@ -32,7 +32,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm - $(TESTNAME)
+	rm -f $(TESTNAME)
 
 re: fclean all
 
