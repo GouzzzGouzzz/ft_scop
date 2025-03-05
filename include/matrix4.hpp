@@ -1,12 +1,14 @@
 #pragma once
 #include "../include/moreMath.hpp"
 
+//Use row-major matrix for calculations, should call convertToColumnMajor before giving it to OpenGL
 class Matrix4{
 	public:
 		Matrix4(float x, float y, float z, float w);
-		//Identity matrix
 		Matrix4(void);
 		~Matrix4();
+		//MOST IMPORTANT FUNCTION
+		void convertToColumnMajor();
 		Matrix4 operator*(const Matrix4& mat) const;
 		std::vector<float> operator*(const std::vector<float>& vec) const;
 		void identity();

@@ -1,4 +1,5 @@
 NAME=scop
+TESTNAME=test
 CXX=g++
 CXXFLAGS=-g #-Wall -Werror -Wextra
 CXXLINKFLAGS=-lglfw -lGL
@@ -31,7 +32,11 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm - $(TESTNAME)
 
 re: fclean all
 
-.PHONY: all re clean fclean
+test:
+	g++ -o $(TESTNAME) test.cpp -lstdc++ -lm
+
+.PHONY: all re clean fclean test

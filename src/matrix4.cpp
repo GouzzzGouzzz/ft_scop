@@ -18,10 +18,6 @@ Matrix4::Matrix4(void){
 			m[i][j] = 0;
 		}
 	}
-	m[0][0] = 1;
-	m[1][1] = 1;
-	m[2][2] = 1;
-	m[3][3] = 1;
 }
 
 Matrix4::~Matrix4() {}
@@ -49,7 +45,7 @@ Matrix4 Matrix4::operator*(const Matrix4& mat) const
 		for(int j = 0; j < 4; j++){
 			res.m[i][j] = 0;
 			for(int k = 0; k < 4; k++){
-				res.m[i][j] += m[i][k] * mat.m[k][j];
+				res.m[i][j] += m[k][j] * mat.m[i][k];
 			}
 		}
 	}
@@ -120,30 +116,24 @@ void Matrix4::identity(){
 //Used to calculate the view matrix
 //https://stackoverflow.com/questions/19740463/lookat-function-im-going-crazy/19740748
 void Matrix4::view(Vector3 eye, Vector3 center, Vector3 up){
-	Vector3 lookDirection;
-	Vector3 right;
-	Vector3 pre_f;
-	pre_f.x = center.x - eye.x;
-	pre_f.y = center.y - eye.y;
-	pre_f.z = center.z - eye.z;
+	Vector3 centerMinusEye(center.x - eye.x, center.y - eye.y, center.z - eye.z);
+	const Vector3 f(normalize(centerMinusEye));
+	const Vector3 s(normalize(cross(f, up)));
+	const Vector3 u(cross(s, f));
 
-	lookDirection  = normalize(pre_f);
-	up = normalize(up);
-	right = normalize(cross(lookDirection, up));
-	up = cross(right, lookDirection);
-
-	m[0][0] = right.x;
-	m[1][0] = right.y;
-	m[2][0] = right.z;
-	m[0][1] = up.x;
-	m[1][1] = up.y;
-	m[2][1] = up.z;
-	m[0][2] =-lookDirection.x;
-	m[1][2] =-lookDirection.y;
-	m[2][2] =-lookDirection.z;
-	m[3][0] =-dot(right, eye);
-	m[3][1] =-dot(up, eye);
-	m[3][2] = dot(lookDirection, eye);
+	m[0][0] = s.x;
+	m[1][0] = s.y;
+	m[2][0] = s.z;
+	m[0][1] = u.x;
+	m[1][1] = u.y;
+	m[2][1] = u.z;
+	m[0][2] =-f.x;
+	m[1][2] =-f.y;
+	m[2][2] =-f.z;
+	m[3][0] =-dot(s, eye);
+	m[3][1] =-dot(u, eye);
+	m[3][2] = dot(f, eye);
+	m[3][3] = 1;
 }
 
 
@@ -153,14 +143,13 @@ void Matrix4::perspective(const float fovy, const float aspect, const float zNea
 {
 	if (aspect == 0 || zFar == zNear)
 		return ;
-	//Might need to change to convert to rad if fovy is radian
-	const float rad = fovy;
+	const float rad = fovy * M_PI / 180;
 	const float tanHalfFovy = tan(rad / 2);
 
 	m[0][0] = 1 / (aspect * tanHalfFovy);
 	m[1][1] = 1 / (tanHalfFovy);
-	m[2][2] = -(zFar + zNear) / (zFar - zNear);
-	m[2][3] = -1;
+	m[2][2] = - (zFar + zNear) / (zFar - zNear);
+	m[2][3] = - 1;
 	m[3][2] = - (2 * zFar * zNear) / (zFar - zNear);
 }
 
@@ -175,6 +164,20 @@ void Matrix4::setValue(const std::array<float, 16> vec) {
 			m[i][j] = vec[i * 4 + j];
 		}
 	}
+}
+
+//!!!!!!!!!!
+//ALWAYS CALL THIS FUNCTION BEFORE GIVING IT TO OPENGL
+//!!!!!!!!!!
+void Matrix4::convertToColumnMajor()
+{
+	std::array<std::array<float, 4>, 4> res;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++){
+			res[j][i] = m[i][j];
+		}
+	}
+	m = res;
 }
 
 std::array<std::array<float, 4>, 4> Matrix4::getMatrix() const{
