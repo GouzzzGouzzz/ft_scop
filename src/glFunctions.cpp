@@ -23,6 +23,10 @@ GL_GETPROGRAMINFOLOG glGetProgramInfoLog = nullptr;
 GL_USEPROGRAM glUseProgram = nullptr;
 GL_DETACHSHADER glDetachShader = nullptr;
 GL_DELETESHADER glDeleteShader = nullptr;
+//Idk
+GL_GETUNIFORMLOCATION glGetUniformLocation = nullptr;
+GL_UNIFORMMATRIX4FV glUniformMatrix4fv = nullptr;
+
 
 void LoadOpenGLFunctions() {
 	// Load OpenGL functions
@@ -48,4 +52,7 @@ void LoadOpenGLFunctions() {
 	glUseProgram = (GL_USEPROGRAM)glXGetProcAddress((const GLubyte*)"glUseProgram");
 	glDetachShader = (GL_DETACHSHADER)glXGetProcAddress((const GLubyte*)"glDetachShader");
 	glDeleteShader = (GL_DELETESHADER)glXGetProcAddress((const GLubyte*)"glDeleteShader");
+	//Idk
+	glGetUniformLocation = (GL_GETUNIFORMLOCATION)glXGetProcAddress((const GLubyte*)"glGetUniformLocation");
+	glUniformMatrix4fv = (GL_UNIFORMMATRIX4FV)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
 }

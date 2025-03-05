@@ -28,6 +28,10 @@ typedef void (*GL_USEPROGRAM)(GLuint);
 typedef void (*GL_DETACHSHADER)(GLuint, GLuint);
 typedef void (*GL_DELETESHADER)(GLuint);
 
+//Idk
+typedef GLuint (*GL_GETUNIFORMLOCATION)(GLuint, const GLchar*);
+typedef void (*GL_UNIFORMMATRIX4FV)(GLint, GLsizei, GLboolean, const GLfloat*);
+
 //Var to VAOS functions
 extern GL_GENBUFFERS glGenBuffers;
 extern GL_BINDBUFFER glBindBuffer;
@@ -52,5 +56,9 @@ extern GL_GETPROGRAMINFOLOG glGetProgramInfoLog;
 extern GL_USEPROGRAM glUseProgram;
 extern GL_DETACHSHADER glDetachShader;
 extern GL_DELETESHADER glDeleteShader;
+
+//Idk
+extern GL_GETUNIFORMLOCATION glGetUniformLocation;
+extern GL_UNIFORMMATRIX4FV glUniformMatrix4fv;
 
 void LoadOpenGLFunctions();

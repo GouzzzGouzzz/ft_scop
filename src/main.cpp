@@ -86,27 +86,6 @@ int main(int ac, char **av) {
 		std::cerr << "Failed to parse file" << std::endl;
 		return -1;
 	}
-	const std::vector<GLfloat>& vertices = parser.getVertices();
-	const std::vector<t_face>& faces = parser.getFaces();
-
-
-	Matrix4 Projection;
-	Matrix4 View;
-	Matrix4 Model;
-
-	Projection.perspective(45.0f, W_WIDTH/W_HEIGHT, 0.1f, 100.0f);
-	View.view(Vector3(4,3,3), Vector3(0,0,0), Vector3(0,1,0));
-	Model.identity();
-
-	Matrix4 MVP = Projection * View * Model;
-
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, MVP.getMatrix().data());
-
-	return 1;
-
-
-
 
 	if (!glfwInit()) {
 		std::cerr << "Failed to initialize GLFW or OpenGl Functions" << std::endl;
@@ -121,13 +100,16 @@ int main(int ac, char **av) {
 	}
 	init(window);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0);
+	// glMatrixMode(GL_PROJECTION);
+	// glLoadIdentity();
+	// glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	glTranslatef(0.0f, 0.0f, -3.0f);
+	// glMatrixMode(GL_MODELVIEW);
+	// glLoadIdentity();
+	// glTranslatef(0.0f, 0.0f, -3.0f);
+
+	const std::vector<GLfloat>& vertices = parser.getVertices();
+	const std::vector<t_face>& faces = parser.getFaces();
 	GLuint VertexArrayID;
 	glGenVertexArrays(1, &VertexArrayID);
 	glBindVertexArray(VertexArrayID);
@@ -136,26 +118,43 @@ int main(int ac, char **av) {
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+
 	//Shader implemtation
 	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
+
+	Matrix4 Projection;
+	Matrix4 View;
+	Matrix4 Model;
+
+	Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
+	View.view(Vector3(3, 3, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	Model.identity();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	Matrix4 MVP = Projection * View * Model;
+
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP.getMatrix()[0][0]);
+
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
-		0,
-		3,			// size
-		GL_FLOAT,	// type
-		GL_FALSE,	// normalized?
-		0,			// stride
-		(void*)0	// array buffer offset
+			0,
+			3,			// size
+			GL_FLOAT,	// type
+			GL_FALSE,	// normalized?
+			0,			// stride
+			(void*)0	// array buffer offset
 		);
-		// glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 		glDisableVertexAttribArray(0);
-
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
