@@ -5,6 +5,13 @@
 double lastX = 0.0;
 double lastY = 0.0;
 bool isRightDrag = false;
+int angleX = 0;
+int angleY = 0;
+
+Matrix4 Projection;
+Matrix4 View;
+Matrix4 Model;
+Matrix4 MVP;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -24,14 +31,36 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 {
+	Matrix4 newMVP;
 	if (isRightDrag)
 	{
 		double deltaX = xpos - lastX;
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		glRotatef(-deltaX * 0.2f, 0.0f, 1.0f, 0.0f);
-		glRotatef(-deltaY * 0.2f, 1.0f, 0.0f, 0.0f);
+		Matrix4 rotaY;
+		Projection.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
+		View.view(Vector3(10, 10, 10), Vector3(0, 0, 0), Vector3(0, 5, 0));
+		Model.identity();
+		if (deltaX < 0){
+			angleX--;
+		}
+		else if (deltaX > 0){
+			angleX++;
+		}
+		if (deltaY < 0){
+			angleY--;
+		}
+		else if (deltaY > 0){
+			angleY++;
+		}
+		Model.rotateX(angleX);
+		rotaY.rotateY(angleY);
+		Model = Model * rotaY;
+		std::cout << deltaX << " " << deltaY << std::endl;
+		newMVP = Projection * View * Model;
+		MVP = newMVP;
+		MVP.convertToColumnMajor();
 	}
 }
 
@@ -59,9 +88,6 @@ std::vector<GLuint> loadEBO(std::vector<t_face> faces) {
 	}
 	return indices;
 }
-
-
-//Maybe put every vertices in the correct order directly before sending them into the vertex buffer data
 
 int main(int ac, char **av) {
 
@@ -100,14 +126,6 @@ int main(int ac, char **av) {
 	}
 	init(window);
 
-	// glMatrixMode(GL_PROJECTION);
-	// glLoadIdentity();
-	// glFrustum(-1.0, 1.0, -1.0, 1.0, 0.5, 100.0);
-
-	// glMatrixMode(GL_MODELVIEW);
-	// glLoadIdentity();
-	// glTranslatef(0.0f, 0.0f, -3.0f);
-
 	const std::vector<GLfloat>& vertices = parser.getVertices();
 	const std::vector<t_face>& faces = parser.getFaces();
 	GLuint VertexArrayID;
@@ -124,13 +142,10 @@ int main(int ac, char **av) {
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-	Matrix4 Projection;
-	Matrix4 View;
-	Matrix4 Model;
-	Matrix4 MVP;
 
-	Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-	View.view(Vector3(3, 3, 5), Vector3(0, 0, 0), Vector3(0, 1, 0));
+
+	Projection.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.01f, 10000.0f);
+	View.view(Vector3(10, 10, 10), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	Model.identity();
 	MVP = Projection * View * Model;
 	MVP.convertToColumnMajor();
