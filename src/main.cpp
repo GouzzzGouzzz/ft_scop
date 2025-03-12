@@ -3,13 +3,10 @@
 double lastX = 0.0;
 double lastY = 0.0;
 bool isRightDrag = false;
-int angleX = 0;
-int angleY = 0;
 
 RenderData render;
 
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
 		if (action == GLFW_PRESS)
@@ -24,8 +21,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
-{
+void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos){
 	if (isRightDrag)
 	{
 		double deltaX = xpos - lastX;
@@ -33,7 +29,6 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		lastX = xpos;
 		lastY = ypos;
 		if (deltaX < 0){
-			angleX--;
 			render.decreaseAngleX(1);
 		}
 		else if (deltaX > 0){
@@ -49,8 +44,7 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 	}
 }
 
-void init(GLFWwindow* window)
-{
+void init(GLFWwindow* window){
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	glfwSetCursorPosCallback(window, mouse_motion_callback);
@@ -59,10 +53,47 @@ void init(GLFWwindow* window)
 	LoadOpenGLFunctions();
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
+}
+
+void initVertex(GLuint* arrayID, GLuint* buffer, const std::vector<GLfloat>& vertices){
+	glGenVertexArrays(1, arrayID);
+	glBindVertexArray(*arrayID);
+
+	glGenBuffers(1, buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
+}
+
+void renderingLoop(GLFWwindow* window, const Parser* parser){
+	GLuint VertexArrayID, vertexbuffer;
+	const std::vector<GLfloat>& vertices = (*parser).getVertices();
+	const std::vector<t_face>& faces = (*parser).getFaces();
+	initVertex(&VertexArrayID, &vertexbuffer, vertices);
+	GLuint programID, MatrixID;
+
+	programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
+	MatrixID = glGetUniformLocation(programID, "MVP");
+	while (glfwWindowShouldClose(window) == 0)
+	{
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glUseProgram(programID);
+		//GL_FALSE or GL_TRUE depending if row major ot column major
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &render.getMVP()[0][0]);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
+		glDisableVertexAttribArray(0);
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwDestroyWindow(window);
+	glfwTerminate();
 }
 
 int main(int ac, char **av) {
-
 	if (ac != 2) {
 		std::cerr << "Usage: " << av[0] << " <filename>.obj" << std::endl;
 		return -1;
@@ -72,10 +103,10 @@ int main(int ac, char **av) {
 		std::cerr << "Invalid file format" << std::endl;
 		return -1;
 	}
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	Parser parser(filename);
+
 	if (parser.failed) {
 		std::cerr << "Failed to parse file" << std::endl;
 		return -1;
@@ -93,43 +124,5 @@ int main(int ac, char **av) {
 		return -1;
 	}
 	init(window);
-	const std::vector<GLfloat>& vertices = parser.getVertices();
-	const std::vector<t_face>& faces = parser.getFaces();
-	GLuint VertexArrayID;
-	glGenVertexArrays(1, &VertexArrayID);
-	glBindVertexArray(VertexArrayID);
-
-	GLuint vertexbuffer;
-	glGenBuffers(1, &vertexbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-
-	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
-	while (glfwWindowShouldClose(window) == 0)
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(programID);
-		//GL_FALSE or GL_TRUE depending if row major ot column major
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &render.getMVP()[0][0]);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(
-			0,
-			3,			// size
-			GL_FLOAT,	// type
-			GL_FALSE,	// normalized?
-			0,			// stride
-			(void*)0	// array buffer offset
-		);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
-		glDisableVertexAttribArray(0);
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-	glfwDestroyWindow(window);
-	glfwTerminate();
+	renderingLoop(window, &parser);
 }

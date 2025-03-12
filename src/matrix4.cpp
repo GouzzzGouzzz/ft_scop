@@ -22,8 +22,7 @@ Matrix4::Matrix4(void){
 
 Matrix4::~Matrix4() {}
 
-std::vector<float> Matrix4::operator*(const std::vector<float>& vec) const
-{
+std::vector<float> Matrix4::operator*(const std::vector<float>& vec) const{
 	if (vec.size() != 4){
 		std::cerr << "Matrix * : vector size must be 4" << std::endl;
 		return vec;
@@ -37,8 +36,7 @@ std::vector<float> Matrix4::operator*(const std::vector<float>& vec) const
 	return res;
 }
 
-Matrix4 Matrix4::operator*(const Matrix4& mat) const
-{
+Matrix4 Matrix4::operator*(const Matrix4& mat) const{
 	Matrix4 res;
 
 	for(int i = 0; i < 4; i++){
@@ -67,8 +65,7 @@ void Matrix4::scale(float x, float y, float z) {
 
 //use degree as input in vector3(x,y,z)
 //same as glm::rotate
-void Matrix4::rotate(float angle, Vector3 axe)
-{
+void Matrix4::rotate(float angle, Vector3 axe){
 	float a = angle * M_PI / 180;
 	float c = cos(a);
 	float s = sin(a);
@@ -153,8 +150,7 @@ void Matrix4::view(Vector3 eye, Vector3 center, Vector3 up){
 
 // https://github.com/g-truc/glm/blob/0.9.5/glm/gtc/matrix_transform.inl#L207-L229
 //Use degree as input for fovy
-void Matrix4::perspective(const float fovy, const float aspect, const float zNear, const float zFar)
-{
+void Matrix4::perspective(const float fovy, const float aspect, const float zNear, const float zFar){
 	if (aspect == 0 || zFar == zNear)
 		return ;
 	const float rad = fovy * M_PI / 180;
@@ -167,8 +163,7 @@ void Matrix4::perspective(const float fovy, const float aspect, const float zNea
 	m[3][2] = - (2 * zFar * zNear) / (zFar - zNear);
 }
 
-void Matrix4::convertToColumnMajor()
-{
+void Matrix4::convertToColumnMajor(){
 	std::array<std::array<float, 4>, 4> res;
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++){
