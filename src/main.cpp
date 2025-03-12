@@ -31,16 +31,15 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	Matrix4 newMVP;
+	Matrix4 newMVP, newProj, newView, newModel;
 	if (isRightDrag)
 	{
 		double deltaX = xpos - lastX;
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		Projection.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-		View.view(Vector3(10, 10, 10), Vector3(0, 0, 0), Vector3(0, 5, 0));
-		Model.identity();
+		newProj.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
+		newView.view(Vector3(2,2,2), Vector3(0, 0, 0), Vector3(0, 1, 0));
 		if (deltaX < 0){
 			angleX--;
 		}
@@ -53,11 +52,19 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		else if (deltaY > 0){
 			angleY++;
 		}
-		Model.rotate(Vector3(angleX, angleY, 0));
-		std::cout << deltaX << " " << deltaY << std::endl;
-		newMVP = Projection * View * Model;
+		newModel.identity();
+		// newModel.rotate(angleX, Vector3(1, 0, 0));
+		// newModel.rotate(angleY, Vector3(0, 1, 0));
+		newModel.rotate(45, Vector3(1, 0, 0));
+		newModel.rotate(90, Vector3(0, 1, 0));
+		std::cout << "newModel" << "  ";
+		newModel.print();
+		// std::cout << deltaX << " " << deltaY << std::endl;
+		newMVP = newProj * newView * newModel;
 		MVP = newMVP;
 		MVP.convertToColumnMajor();
+		std::cout << "newMVP (column)" << "  ";
+		// MVP.print();
 	}
 }
 
@@ -69,21 +76,10 @@ void init(GLFWwindow* window)
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSwapInterval(1);
 	LoadOpenGLFunctions();
-}
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 
-std::vector<GLuint> loadEBO(std::vector<t_face> faces) {
-	std::vector<GLuint> indices;
-	for (std::vector<t_face>::iterator it = faces.begin(); it != faces.end(); it++) {
-		indices.push_back(it->v1 - 1);
-		indices.push_back(it->v2 - 1);
-		indices.push_back(it->v3 - 1);
-		if (it->v4 != 0) {
-			indices.push_back(it->v1 - 1);
-			indices.push_back(it->v3 - 1);
-			indices.push_back(it->v4 - 1);
-		}
-	}
-	return indices;
 }
 
 int main(int ac, char **av) {
@@ -94,10 +90,6 @@ int main(int ac, char **av) {
 	}
 	std::string filename = av[1];
 	if (filename.find(".obj") == std::string::npos || filename.rfind(".") != filename.find(".") || filename.find(".obj") + 4 != filename.length()) {
-		// std::cout << filename.find(".obj") << "==" << std::string::npos << std::endl;
-		// std::cout << filename.rfind(".") << "!=" << filename.find(".") << std::endl;
-		// std::cout << filename.find(".obj") + 4 << "!=" << filename.length() << std::endl;
-
 		std::cerr << "Invalid file format" << std::endl;
 		return -1;
 	}
@@ -133,19 +125,21 @@ int main(int ac, char **av) {
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-
+	for (int i=0; i < vertices.size(); i+=3) {
+		std::cout << "vertex :" << vertices[i] << " " << vertices[i + 1] << " " << vertices[i + 2] << std::endl;
+	}
 	//Shader implemtation
 	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-
-	Projection.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.01f, 10000.0f);
-	View.view(Vector3(10, 10, 10), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
+	View.view(Vector3(2, 2, 2), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	Model.identity();
 	MVP = Projection * View * Model;
 	MVP.convertToColumnMajor();
+	MVP.print();
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 
 	while (glfwWindowShouldClose(window) == 0)
@@ -153,7 +147,6 @@ int main(int ac, char **av) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP.getMatrix()[0][0]);
-
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
@@ -166,6 +159,7 @@ int main(int ac, char **av) {
 		);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 		glDisableVertexAttribArray(0);
+		MVP.print();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

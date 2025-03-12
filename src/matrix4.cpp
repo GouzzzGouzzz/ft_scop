@@ -66,38 +66,51 @@ void Matrix4::scale(float x, float y, float z) {
 }
 
 //use degree as input in vector3(x,y,z)
-void Matrix4::rotate(Vector3 angles)
+//same as glm::rotate
+void Matrix4::rotate(float angle, Vector3 axe)
 {
-	float angleX = angles.x * M_PI / 180;
-	float angleY = angles.y * M_PI / 180;
-	float angleZ = angles.z * M_PI / 180;
+	float a = angle * M_PI / 180;
+	float c = cos(a);
+	float s = sin(a);
 
-	Matrix4 rotX, rotY, rotZ;
+	Vector3 axis(normalize(axe));
+	float tempValue = (1 - c);
+	Vector3 temp(tempValue * axis.x, tempValue * axis.y, tempValue * axis.z);
 
-	//rota x
-	rotX.m[0][0] = 1;
-	rotX.m[1][1] = cos(angleX);
-	rotX.m[1][2] = -sin(angleX);
-	rotX.m[2][1] = sin(angleX);
-	rotX.m[2][2] = cos(angleX);
-	rotX.m[3][3] = 1;
-	//rota y
-	rotY.m[0][0] = cos(angleY);
-	rotY.m[0][2] = sin(angleY);
-	rotY.m[1][1] = 1;
-	rotY.m[2][0] = -sin(angleY);
-	rotY.m[2][2] = cos(angleY);
-	rotY.m[3][3] = 1;
 
-	//rota z
-	rotZ.m[0][0] = cos(angleZ);
-	rotZ.m[0][1] = -sin(angleZ);
-	rotZ.m[1][0] = sin(angleZ);
-	rotZ.m[1][1] = cos(angleZ);
-	rotZ.m[2][2] = 1;
-	rotZ.m[3][3] = 1;
+	Matrix4 Rotate;
+	Rotate.m[0][0] = c + temp.x * axis.x;
+	Rotate.m[0][1] = temp.x * axis.y + s * axis.z;
+	Rotate.m[0][2] = temp.x * axis.z - s * axis.y;
 
-	*this = rotX * rotY * rotZ;
+	Rotate.m[1][0] = temp.y * axis.x - s * axis.z;
+	Rotate.m[1][1] = c + temp.y * axis.y;
+	Rotate.m[1][2] = temp.y * axis.z + s * axis.x;
+
+	Rotate.m[2][0] = temp.z * axis.x + s * axis.y;
+	Rotate.m[2][1] = temp.z * axis.y - s * axis.x;
+	Rotate.m[2][2] = c + temp.z * axis.z;
+
+	Matrix4 Result;
+
+	Result.m[0][0] = m[0][0] * Rotate.m[0][0] + m[1][0] * Rotate.m[0][1] + m[2][0] * Rotate.m[0][2];
+	Result.m[0][1] = m[0][1] * Rotate.m[0][0] + m[1][1] * Rotate.m[0][1] + m[2][1] * Rotate.m[0][2];
+	Result.m[0][2] = m[0][2] * Rotate.m[0][0] + m[1][2] * Rotate.m[0][1] + m[2][2] * Rotate.m[0][2];
+
+	Result.m[1][0] = m[0][0] * Rotate.m[1][0] + m[1][0] * Rotate.m[1][1] + m[2][0] * Rotate.m[1][2];
+	Result.m[1][1] = m[0][1] * Rotate.m[1][0] + m[1][1] * Rotate.m[1][1] + m[2][1] * Rotate.m[1][2];
+	Result.m[1][2] = m[0][2] * Rotate.m[1][0] + m[1][2] * Rotate.m[1][1] + m[2][2] * Rotate.m[1][2];
+
+	Result.m[2][0] = m[0][0] * Rotate.m[2][0] + m[1][0] * Rotate.m[2][1] + m[2][0] * Rotate.m[2][2];
+	Result.m[2][1] = m[0][1] * Rotate.m[2][0] + m[1][1] * Rotate.m[2][1] + m[2][1] * Rotate.m[2][2];
+	Result.m[2][2] = m[0][2] * Rotate.m[2][0] + m[1][2] * Rotate.m[2][1] + m[2][2] * Rotate.m[2][2];
+
+	Result.m[3][0] = m[3][0];
+	Result.m[3][1] = m[3][1];
+	Result.m[3][2] = m[3][2];
+	Result.m[3][3] = m[3][3];
+
+	*this = Result;
 }
 
 //Set the matrix to identity (1,1,1,1)
@@ -154,19 +167,6 @@ void Matrix4::perspective(const float fovy, const float aspect, const float zNea
 	m[3][2] = - (2 * zFar * zNear) / (zFar - zNear);
 }
 
-//Set the matrix value with a vector of size 16
-void Matrix4::setValue(const std::array<float, 16> vec) {
-	if (vec.size() != 16) {
-		std::cerr << "Matrix setValue : vector size must be 16" << std::endl;
-		return;
-	}
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++) {
-			m[i][j] = vec[i * 4 + j];
-		}
-	}
-}
-
 //!!!!!!!!!!
 //ALWAYS CALL THIS FUNCTION BEFORE GIVING IT TO OPENGL
 //!!!!!!!!!!
@@ -186,6 +186,7 @@ std::array<std::array<float, 4>, 4> Matrix4::getMatrix() const{
 }
 
 void Matrix4::print() const {
+	std::cout << "Matrix4:" << std::endl;
 	for (int i = 0; i < 4; i++) {
 		std::cout << "[ ";
 		for (int j = 0; j < 4; j++) {
@@ -193,4 +194,5 @@ void Matrix4::print() const {
 		}
 		std::cout <<" ]" << std::endl;
 	}
+	std::cout << std::endl;
 }
