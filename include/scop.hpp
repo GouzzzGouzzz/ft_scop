@@ -4,24 +4,21 @@
 #include <GLFW/glfw3.h>
 
 //Standard includes
-#include <math.h>
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include <array>
+#include "standard.hpp"
 
-//My OpenGL headers to load the functions
+//My OpenGL headers to load the functions (like GLEW)
 #include "glFunction.hpp"
+
+//Include defines
+#include "defines.hpp"
 
 //My Custom headers
 #include "structs.h"
 #include "moreMath.hpp"
 #include "matrix4.hpp"
+#include "renderData.hpp"
+#include "parser.hpp"
 
-//Define the window size
-#define W_WIDTH 800
-
-#define W_HEIGHT 640
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 

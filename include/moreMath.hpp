@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../include/scop.hpp"
+#include "structs.h"
 
 float dot(Vector3 a, Vector3 b);
 Vector3 cross(Vector3 a, Vector3 b);

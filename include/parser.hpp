@@ -1,7 +1,8 @@
 #pragma once
 
-
-#include "../include/scop.hpp"
+#include "standard.hpp"
+#include "structs.h"
+#include "glFunction.hpp"
 
 class Parser {
 	public:

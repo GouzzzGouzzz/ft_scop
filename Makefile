@@ -11,6 +11,7 @@ FILES=main.cpp\
 	glFunctions.cpp\
 	matrix4.cpp\
 	moreMath.cpp\
+	renderData.cpp\
 
 SRC=$(FILES:%=$(SRC_DIR)/%.cpp)
 OBJ=$(FILES:%.cpp=$(OBJ_DIR)/%.o)

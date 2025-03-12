@@ -1,6 +1,4 @@
-
 #include "../include/scop.hpp"
-#include "../include/parser.hpp"
 
 double lastX = 0.0;
 double lastY = 0.0;
@@ -8,10 +6,7 @@ bool isRightDrag = false;
 int angleX = 0;
 int angleY = 0;
 
-Matrix4 Projection;
-Matrix4 View;
-Matrix4 Model;
-Matrix4 MVP;
+RenderData render;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -31,32 +26,26 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	Matrix4 newMVP, newProj, newView, newModel;
 	if (isRightDrag)
 	{
 		double deltaX = xpos - lastX;
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		newProj.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-		newView.view(Vector3(5,5,5), Vector3(0, 0, 0), Vector3(0, 1, 0));
 		if (deltaX < 0){
 			angleX--;
+			render.decreaseAngleX(1);
 		}
 		else if (deltaX > 0){
-			angleX++;
+			render.increaseAngleX(1);
 		}
 		if (deltaY < 0){
-			angleY--;
+			render.decreaseAngleY(1);
 		}
 		else if (deltaY > 0){
-			angleY++;
+			render.increaseAngleY(1);
 		}
-		newModel.identity();
-		newModel.rotate(angleX, Vector3(1, 0, 0));
-		newModel.rotate(angleY, Vector3(0, 1, 0));
-		newMVP = newProj * newView * newModel;
-		MVP = newMVP;
+		render.applyRotation();
 	}
 }
 
@@ -104,7 +93,6 @@ int main(int ac, char **av) {
 		return -1;
 	}
 	init(window);
-
 	const std::vector<GLfloat>& vertices = parser.getVertices();
 	const std::vector<t_face>& faces = parser.getFaces();
 	GLuint VertexArrayID;
@@ -119,12 +107,6 @@ int main(int ac, char **av) {
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	// Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-	// View.view(Vector3(2, 2, 2), Vector3(0, 0, 0), Vector3(0, 1, 0));
-	// Model.identity();
-	// MVP = Projection * View * Model;
-	// MVP.print();
-
 	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	while (glfwWindowShouldClose(window) == 0)
@@ -132,7 +114,7 @@ int main(int ac, char **av) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
 		//GL_FALSE or GL_TRUE depending if row major ot column major
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP.getMatrix()[0][0]);
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &render.getMVP()[0][0]);
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 		glVertexAttribPointer(
