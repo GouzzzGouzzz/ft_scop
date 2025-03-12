@@ -14,9 +14,7 @@ class Matrix4{
 		void identity();
 		void translate(float x, float y, float z);
 		void scale(float x, float y, float z);
-		void rotateX(float angle);
-		void rotateY(float angle);
-		void rotateZ(float angle);
+		void rotate(Vector3 angles);
 		void view(Vector3 eye, Vector3 center, Vector3 up);
 		void perspective(const float fovy, const float aspect, const float zNear, const float zFar);
 		void setValue(const std::array<float, 16> vec);

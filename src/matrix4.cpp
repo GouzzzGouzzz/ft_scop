@@ -65,38 +65,39 @@ void Matrix4::scale(float x, float y, float z) {
 	m[2][2] = z;
 }
 
-//Use degree as input
-void Matrix4::rotateX(float angle){
-	angle = angle * M_PI / 180;
-	m[0][0] = 1;
-	m[1][1] = cos(angle);
-	m[1][2] = -sin(angle);
-	m[2][1] = sin(angle);
-	m[2][2] = cos(angle);
-	m[3][3] = 1;
-}
+//use degree as input in vector3(x,y,z)
+void Matrix4::rotate(Vector3 angles)
+{
+	float angleX = angles.x * M_PI / 180;
+	float angleY = angles.y * M_PI / 180;
+	float angleZ = angles.z * M_PI / 180;
 
-//Use degree as input
-void Matrix4::rotateY(float angle){
-	angle = angle * M_PI / 180;
-	m[0][0] = cos(angle);
-	m[0][2] = sin(angle);
-	m[1][1] = 1;
-	m[2][0] = -sin(angle);
-	m[2][2] = cos(angle);
-	m[3][3] = 1;
+	Matrix4 rotX, rotY, rotZ;
 
-}
+	//rota x
+	rotX.m[0][0] = 1;
+	rotX.m[1][1] = cos(angleX);
+	rotX.m[1][2] = -sin(angleX);
+	rotX.m[2][1] = sin(angleX);
+	rotX.m[2][2] = cos(angleX);
+	rotX.m[3][3] = 1;
+	//rota y
+	rotY.m[0][0] = cos(angleY);
+	rotY.m[0][2] = sin(angleY);
+	rotY.m[1][1] = 1;
+	rotY.m[2][0] = -sin(angleY);
+	rotY.m[2][2] = cos(angleY);
+	rotY.m[3][3] = 1;
 
-//Use degree as input
-void Matrix4::rotateZ(float angle){
-	angle = angle * M_PI / 180;
-	m[0][0] = cos(angle);
-	m[0][1] = -sin(angle);
-	m[1][0] = sin(angle);
-	m[1][1] = cos(angle);
-	m[2][2] = 1;
-	m[3][3] = 1;
+	//rota z
+	rotZ.m[0][0] = cos(angleZ);
+	rotZ.m[0][1] = -sin(angleZ);
+	rotZ.m[1][0] = sin(angleZ);
+	rotZ.m[1][1] = cos(angleZ);
+	rotZ.m[2][2] = 1;
+	rotZ.m[3][3] = 1;
+
+	*this = rotX * rotY * rotZ;
 }
 
 //Set the matrix to identity (1,1,1,1)

@@ -38,7 +38,6 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		Matrix4 rotaY;
 		Projection.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
 		View.view(Vector3(10, 10, 10), Vector3(0, 0, 0), Vector3(0, 5, 0));
 		Model.identity();
@@ -54,9 +53,7 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		else if (deltaY > 0){
 			angleY++;
 		}
-		Model.rotateX(angleX);
-		rotaY.rotateY(angleY);
-		Model = Model * rotaY;
+		Model.rotate(Vector3(angleX, angleY, 0));
 		std::cout << deltaX << " " << deltaY << std::endl;
 		newMVP = Projection * View * Model;
 		MVP = newMVP;
