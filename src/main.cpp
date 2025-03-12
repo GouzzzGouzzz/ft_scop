@@ -39,7 +39,7 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 		lastX = xpos;
 		lastY = ypos;
 		newProj.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-		newView.view(Vector3(2,2,2), Vector3(0, 0, 0), Vector3(0, 1, 0));
+		newView.view(Vector3(5,5,5), Vector3(0, 0, 0), Vector3(0, 1, 0));
 		if (deltaX < 0){
 			angleX--;
 		}
@@ -53,18 +53,10 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos)
 			angleY++;
 		}
 		newModel.identity();
-		// newModel.rotate(angleX, Vector3(1, 0, 0));
-		// newModel.rotate(angleY, Vector3(0, 1, 0));
-		newModel.rotate(45, Vector3(1, 0, 0));
-		newModel.rotate(90, Vector3(0, 1, 0));
-		std::cout << "newModel" << "  ";
-		newModel.print();
-		// std::cout << deltaX << " " << deltaY << std::endl;
+		newModel.rotate(angleX, Vector3(1, 0, 0));
+		newModel.rotate(angleY, Vector3(0, 1, 0));
 		newMVP = newProj * newView * newModel;
 		MVP = newMVP;
-		MVP.convertToColumnMajor();
-		std::cout << "newMVP (column)" << "  ";
-		// MVP.print();
 	}
 }
 
@@ -78,8 +70,6 @@ void init(GLFWwindow* window)
 	LoadOpenGLFunctions();
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
-
 }
 
 int main(int ac, char **av) {
@@ -125,27 +115,23 @@ int main(int ac, char **av) {
 	glGenBuffers(1, &vertexbuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-	for (int i=0; i < vertices.size(); i+=3) {
-		std::cout << "vertex :" << vertices[i] << " " << vertices[i + 1] << " " << vertices[i + 2] << std::endl;
-	}
-	//Shader implemtation
-	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
-	Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
-	View.view(Vector3(2, 2, 2), Vector3(0, 0, 0), Vector3(0, 1, 0));
-	Model.identity();
-	MVP = Projection * View * Model;
-	MVP.convertToColumnMajor();
-	MVP.print();
-	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
+	// Projection.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 100.0f);
+	// View.view(Vector3(2, 2, 2), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	// Model.identity();
+	// MVP = Projection * View * Model;
+	// MVP.print();
 
+	GLuint programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
+	GLuint MatrixID = glGetUniformLocation(programID, "MVP");
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
+		//GL_FALSE or GL_TRUE depending if row major ot column major
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP.getMatrix()[0][0]);
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
@@ -159,7 +145,6 @@ int main(int ac, char **av) {
 		);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 		glDisableVertexAttribArray(0);
-		MVP.print();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

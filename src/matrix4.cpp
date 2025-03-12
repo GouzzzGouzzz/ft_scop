@@ -167,9 +167,6 @@ void Matrix4::perspective(const float fovy, const float aspect, const float zNea
 	m[3][2] = - (2 * zFar * zNear) / (zFar - zNear);
 }
 
-//!!!!!!!!!!
-//ALWAYS CALL THIS FUNCTION BEFORE GIVING IT TO OPENGL
-//!!!!!!!!!!
 void Matrix4::convertToColumnMajor()
 {
 	std::array<std::array<float, 4>, 4> res;
