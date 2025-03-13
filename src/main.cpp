@@ -70,11 +70,12 @@ void renderingLoop(GLFWwindow* window, const Parser* parser){
 	GLuint VertexArrayID, vertexbuffer;
 	const std::vector<GLfloat>& vertices = (*parser).getVertices();
 	const std::vector<t_face>& faces = (*parser).getFaces();
-	initVertex(&VertexArrayID, &vertexbuffer, vertices);
 	GLuint programID, MatrixID;
 
+	initVertex(&VertexArrayID, &vertexbuffer, vertices);
 	programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 	MatrixID = glGetUniformLocation(programID, "MVP");
+	render.lookAtObj(vertices);
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

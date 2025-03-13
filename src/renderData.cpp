@@ -2,8 +2,8 @@
 
 RenderData::RenderData() {
 	Model.identity();
-	Proj.perspective(60.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(5,5,5), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
+	View.view(Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	MVP = Proj * View * Model;
 	angleX = 0;
 	angleY = 0;
@@ -45,4 +45,41 @@ void RenderData::increaseAngleZ(double step) {
 
 std::array<std::array<float, 4>, 4> RenderData::getMVP() const {
 	return MVP.getMatrix();
+}
+
+void RenderData::lookAtObj(const std::vector<GLfloat> &vertices) {
+	Vector3 min(0, 0, 0);
+	Vector3 max(0, 0, 0);
+	float x, y, z;
+
+	for (size_t i = 0; i < vertices.size(); i += 3) {
+		x = vertices[i];
+		y = vertices[i + 1];
+		z = vertices[i + 2];
+		if (min.x > x)
+			min.x = x;
+		if (min.y > y)
+			min.y = y;
+		if (min.z > z)
+			min.z = z;
+
+		if (max.x < x)
+			max.x = x;
+		if (max.y < y)
+			max.y = y;
+		if (max.z < z)
+			max.z = z;
+	}
+
+	Vector3 center(
+		(min.x + max.x) / 2.0f,
+		(min.y + max.y) / 2.0f,
+		(min.z + max.z) / 2.0f
+	);
+	cameraPos = Vector3(center.x + 15, center.y, center.z);
+
+	View = Matrix4();
+
+	View.view(cameraPos, center, Vector3(0, 1, 0));
+	MVP = Proj * View * Model;
 }
