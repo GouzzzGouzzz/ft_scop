@@ -8,10 +8,15 @@ RenderData::RenderData() {
 	angleX = 0;
 	angleY = 0;
 	angleZ = 0;
+	zoom = 1;
+	moveX = 0;
+	moveY = 0;
+	moveZ = 0;
 }
 
 RenderData::~RenderData() { }
 
+//Rotation Handling
 void RenderData::applyRotation() {
 	Model.rotate(angleX, Vector3(1, 0, 0));
 	Model.rotate(angleY, Vector3(0, 1, 0));
@@ -42,6 +47,43 @@ void RenderData::increaseAngleY(double step) {
 void RenderData::increaseAngleZ(double step) {
 	angleZ += step * SENSIVITY;
 }
+
+//Translation Handling (Move object)
+void RenderData::axeX(double step) {
+	moveX += step;
+	Model.translate(moveX, 0, 0);
+	MVP = Proj * View * Model;
+}
+
+void RenderData::axeY(double step) {
+	moveY += step;
+	Model.translate(0, moveY, 0);
+	MVP = Proj * View * Model;
+}
+
+void RenderData::axeZ(double step) {
+	moveZ += step;
+	Model.translate(0, 0, moveZ);
+	MVP = Proj * View * Model;
+}
+
+//Scaling Handling (Zoom in/out)
+
+void RenderData::zoomIn(double step) {
+	zoom += step;
+	Model.scale(zoom, zoom, zoom);
+	MVP = Proj * View * Model;
+}
+
+void RenderData::zoomOut(double step) {
+	if (zoom - step <= 0)
+		return ;
+	zoom -= step;
+	Model.scale(zoom, zoom, zoom);
+	MVP = Proj * View * Model;
+}
+
+//Other
 
 std::array<std::array<float, 4>, 4> RenderData::getMVP() const {
 	return MVP.getMatrix();
@@ -76,6 +118,7 @@ void RenderData::lookAtObj(const std::vector<GLfloat> &vertices) {
 		(min.y + max.y) / 2.0f,
 		(min.z + max.z) / 2.0f
 	);
+
 	cameraPos = Vector3(center.x + 15, center.y, center.z);
 
 	View = Matrix4();

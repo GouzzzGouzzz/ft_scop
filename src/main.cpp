@@ -6,6 +6,31 @@ bool isRightDrag = false;
 
 RenderData render;
 
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		render.axeX(-1);
+	else if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		render.axeX(1);
+	else if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		render.axeY(1);
+	else if (key == GLFW_KEY_S && action == GLFW_PRESS)
+		render.axeY(-1);
+	else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		render.axeZ(-1);
+	else if (key == GLFW_KEY_E && action == GLFW_PRESS)
+		render.axeZ(1);
+}
+
+void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+	if (yoffset > 0) {
+		render.zoomIn(1);
+	}
+	else {
+		render.zoomOut(1);
+	}
+}
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods){
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
@@ -49,6 +74,8 @@ void init(GLFWwindow* window){
 	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	glfwSetCursorPosCallback(window, mouse_motion_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetScrollCallback(window, mouse_scroll_callback);
+	glfwSetKeyCallback(window, key_callback);
 	glfwSwapInterval(1);
 	LoadOpenGLFunctions();
 	glEnable(GL_CULL_FACE);
