@@ -1,7 +1,31 @@
 #include "../include/renderData.hpp"
 
-RenderData::RenderData() {
+RenderData::RenderData(const std::vector<GLfloat> &vertices) {
+	this->vertices = &vertices;
+	Vector3 center = getObjCenter();
 	Model.identity();
+	Model.translate(-center.x, -center.y, -center.z);
+	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
+	View.view(Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	MVP = Proj * View * Model;
+	angleX = 0;
+	angleY = 0;
+	angleZ = 0;
+	zoom = 1;
+	moveX = 0;
+	moveY = 0;
+	moveZ = 0;
+}
+
+RenderData::RenderData() {
+
+}
+
+void RenderData::init(const std::vector<GLfloat> &vertices) {
+	this->vertices = &vertices;
+	Vector3 center = getObjCenter();
+	Model.identity();
+	Model.translate(-center.x, -center.y, -center.z);
 	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
 	View.view(Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 1, 0));
 	MVP = Proj * View * Model;
@@ -89,15 +113,15 @@ std::array<std::array<float, 4>, 4> RenderData::getMVP() const {
 	return MVP.getMatrix();
 }
 
-void RenderData::lookAtObj(const std::vector<GLfloat> &vertices) {
+Vector3 RenderData::getObjCenter() const {
 	Vector3 min(0, 0, 0);
 	Vector3 max(0, 0, 0);
 	float x, y, z;
 
-	for (size_t i = 0; i < vertices.size(); i += 3) {
-		x = vertices[i];
-		y = vertices[i + 1];
-		z = vertices[i + 2];
+	for (size_t i = 0; i < (*vertices).size(); i += 3) {
+		x = (*vertices)[i];
+		y = (*vertices)[i + 1];
+		z = (*vertices)[i + 2];
 		if (min.x > x)
 			min.x = x;
 		if (min.y > y)
@@ -118,9 +142,12 @@ void RenderData::lookAtObj(const std::vector<GLfloat> &vertices) {
 		(min.y + max.y) / 2.0f,
 		(min.z + max.z) / 2.0f
 	);
+	return center;
+}
 
+void RenderData::lookAtObj() {
+	Vector3 center = getObjCenter();
 	cameraPos = Vector3(center.x + 15, center.y, center.z);
-
 	View = Matrix4();
 
 	View.view(cameraPos, center, Vector3(0, 1, 0));
