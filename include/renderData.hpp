@@ -16,7 +16,7 @@ class RenderData{
 		RenderData();
 		~RenderData();
 		void lookAtObj();
-		//Rotation Handling
+		//Rotation Handling (might have to redo this in fact)
 		void applyRotation();
 		void decreaseAngleX(double step);
 		void decreaseAngleY(double step);

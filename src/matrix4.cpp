@@ -41,7 +41,6 @@ Matrix4 Matrix4::operator*(const Matrix4& mat) const{
 
 	for(int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
-			res.m[i][j] = 0;
 			for(int k = 0; k < 4; k++){
 				res.m[i][j] += m[k][j] * mat.m[i][k];
 			}
@@ -52,9 +51,9 @@ Matrix4 Matrix4::operator*(const Matrix4& mat) const{
 }
 
 void Matrix4::translate(float x, float y, float z) {
-	m[0][3] = x;
-	m[1][3] = y;
-	m[2][3] = z;
+	m[3][0] = x;
+	m[3][1] = y;
+	m[3][2] = z;
 }
 
 void Matrix4::scale(float x, float y, float z) {

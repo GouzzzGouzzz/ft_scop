@@ -8,7 +8,6 @@ int main() {
     // Projection matrix
     glm::mat4 Projection = glm::perspective(glm::radians(60.0f), 800.0f / 640.0f, 0.1f, 100.0f);
 	std::cout << "GLM : Projection" << std::endl;
-
     float* m = glm::value_ptr(Projection);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -33,8 +32,7 @@ int main() {
     }
     // Model matrix (Identity)
     glm::mat4 Model = glm::mat4(1.0f);
-	Model = glm::rotate(Model, glm::radians(45.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	Model = glm::rotate(Model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Model = glm::translate(Model, glm::vec3(1.0f, 0.0f, 0.0f));
 	std::cout << "GLM : Model" << std::endl;
 	m = glm::value_ptr(Model);
     for (int i = 0; i < 4; i++) {

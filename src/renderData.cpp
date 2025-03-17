@@ -2,11 +2,9 @@
 
 RenderData::RenderData(const std::vector<GLfloat> &vertices) {
 	this->vertices = &vertices;
-	Vector3 center = getObjCenter();
 	Model.identity();
-	Model.translate(-center.x, -center.y, -center.z);
 	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
 	MVP = Proj * View * Model;
 	angleX = 0;
 	angleY = 0;
@@ -23,11 +21,9 @@ RenderData::RenderData() {
 
 void RenderData::init(const std::vector<GLfloat> &vertices) {
 	this->vertices = &vertices;
-	Vector3 center = getObjCenter();
 	Model.identity();
-	Model.translate(-center.x, -center.y, -center.z);
 	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(0,0,0), Vector3(0, 0, 0), Vector3(0, 1, 0));
+	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
 	MVP = Proj * View * Model;
 	angleX = 0;
 	angleY = 0;
@@ -75,19 +71,27 @@ void RenderData::increaseAngleZ(double step) {
 //Translation Handling (Move object)
 void RenderData::axeX(double step) {
 	moveX += step;
-	Model.translate(moveX, 0, 0);
+	std::cout << "Model before :" << std::endl;
+	Model.print();
+	Model.translate(moveX, moveY, moveZ);
+	std::cout << "Model after :" << std::endl;
+	Model.print();
+	std::cout << "MVP before :" << std::endl;
+	MVP.print();
 	MVP = Proj * View * Model;
+	std::cout << "MVP after :" << std::endl;
+	MVP.print();
 }
 
 void RenderData::axeY(double step) {
 	moveY += step;
-	Model.translate(0, moveY, 0);
+	Model.translate(moveX, moveY, moveZ);
 	MVP = Proj * View * Model;
 }
 
 void RenderData::axeZ(double step) {
 	moveZ += step;
-	Model.translate(0, 0, moveZ);
+	Model.translate(moveX, moveY, moveZ);
 	MVP = Proj * View * Model;
 }
 
@@ -152,4 +156,6 @@ void RenderData::lookAtObj() {
 
 	View.view(cameraPos, center, Vector3(0, 1, 0));
 	MVP = Proj * View * Model;
+	// std::cout << "First init (lookAtObj called) :" << std::endl;
+	// MVP.print();
 }
