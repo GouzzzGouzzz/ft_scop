@@ -3,112 +3,73 @@
 RenderData::RenderData(const std::vector<GLfloat> &vertices) {
 	this->vertices = &vertices;
 	Model.identity();
-	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
-	MVP = Proj * View * Model;
-	angleX = 0;
-	angleY = 0;
-	angleZ = 0;
+	Scale.identity();
+	Rotate.identity();
+	Translate.identity();
 	zoom = 1;
 	moveX = 0;
 	moveY = 0;
 	moveZ = 0;
+
+	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
+	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
+	calcMVP();
 }
 
-RenderData::RenderData() {
-
-}
+RenderData::RenderData() { }
 
 void RenderData::init(const std::vector<GLfloat> &vertices) {
 	this->vertices = &vertices;
 	Model.identity();
-	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
-	MVP = Proj * View * Model;
-	angleX = 0;
-	angleY = 0;
-	angleZ = 0;
+	Scale.identity();
+	Rotate.identity();
+	Translate.identity();
 	zoom = 1;
 	moveX = 0;
 	moveY = 0;
 	moveZ = 0;
+
+	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
+	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
+	calcMVP();
 }
 
 RenderData::~RenderData() { }
 
-//Rotation Handling
-void RenderData::applyRotation() {
-	Model.rotate(angleX, Vector3(1, 0, 0));
-	Model.rotate(angleY, Vector3(0, 1, 0));
-	Model.rotate(angleZ, Vector3(0, 0, 1));
-	MVP = Proj * View * Model;
-}
-
-void RenderData::decreaseAngleX(double step) {
-	angleX -= step * SENSIVITY;
-}
-
-void RenderData::decreaseAngleY(double step) {
-	angleY -= step * SENSIVITY;
-}
-
-void RenderData::decreaseAngleZ(double step) {
-	angleZ -= step * SENSIVITY;
-}
-
-void RenderData::increaseAngleX(double step) {
-	angleX += step * SENSIVITY;
-}
-
-void RenderData::increaseAngleY(double step) {
-	angleY += step * SENSIVITY;
-}
-
-void RenderData::increaseAngleZ(double step) {
-	angleZ += step * SENSIVITY;
-}
 
 //Translation Handling (Move object)
 void RenderData::axeX(double step) {
 	moveX += step;
-	std::cout << "Model before :" << std::endl;
-	Model.print();
-	Model.translate(moveX, moveY, moveZ);
-	std::cout << "Model after :" << std::endl;
-	Model.print();
-	std::cout << "MVP before :" << std::endl;
-	MVP.print();
-	MVP = Proj * View * Model;
-	std::cout << "MVP after :" << std::endl;
-	MVP.print();
+	Translate.translate(moveX, moveY, moveZ);
+	calcMVP();
 }
 
 void RenderData::axeY(double step) {
 	moveY += step;
-	Model.translate(moveX, moveY, moveZ);
-	MVP = Proj * View * Model;
+	Translate.translate(moveX, moveY, moveZ);
+	calcMVP();
 }
 
 void RenderData::axeZ(double step) {
 	moveZ += step;
-	Model.translate(moveX, moveY, moveZ);
-	MVP = Proj * View * Model;
+	Translate.translate(moveX, moveY, moveZ);
+	calcMVP();
 }
 
 //Scaling Handling (Zoom in/out)
 
 void RenderData::zoomIn(double step) {
 	zoom += step;
-	Model.scale(zoom, zoom, zoom);
-	MVP = Proj * View * Model;
+	Scale.scale(zoom, zoom, zoom);
+	calcMVP();
 }
 
 void RenderData::zoomOut(double step) {
 	if (zoom - step <= 0)
 		return ;
 	zoom -= step;
-	Model.scale(zoom, zoom, zoom);
-	MVP = Proj * View * Model;
+	Scale.scale(zoom, zoom, zoom);
+	calcMVP();
 }
 
 //Other
@@ -153,9 +114,11 @@ void RenderData::lookAtObj() {
 	Vector3 center = getObjCenter();
 	cameraPos = Vector3(center.x + 15, center.y, center.z);
 	View = Matrix4();
-
 	View.view(cameraPos, center, Vector3(0, 1, 0));
+	calcMVP();
+}
+
+void RenderData::calcMVP() {
+	Model = Translate * Rotate * Scale;
 	MVP = Proj * View * Model;
-	// std::cout << "First init (lookAtObj called) :" << std::endl;
-	// MVP.print();
 }

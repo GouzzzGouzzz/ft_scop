@@ -8,18 +8,22 @@ RenderData render;
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_A && action == GLFW_PRESS)
-		render.axeX(-1);
-	else if (key == GLFW_KEY_D && action == GLFW_PRESS)
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
 		render.axeX(1);
+	else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		render.axeX(-1);
 	else if (key == GLFW_KEY_W && action == GLFW_PRESS)
 		render.axeY(1);
 	else if (key == GLFW_KEY_S && action == GLFW_PRESS)
 		render.axeY(-1);
-	else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	else if (key == GLFW_KEY_D && action == GLFW_PRESS)
 		render.axeZ(-1);
-	else if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	else if (key == GLFW_KEY_A && action == GLFW_PRESS)
 		render.axeZ(1);
+	else if (key == GLFW_KEY_X && action == GLFW_PRESS)
+		render.lookAtObj();
+	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -53,19 +57,19 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos){
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		if (deltaX < 0){
-			render.decreaseAngleX(1);
-		}
-		else if (deltaX > 0){
-			render.increaseAngleX(1);
-		}
-		if (deltaY < 0){
-			render.decreaseAngleY(1);
-		}
-		else if (deltaY > 0){
-			render.increaseAngleY(1);
-		}
-		render.applyRotation();
+		// if (deltaX < 0){
+		// 	render.decreaseAngleX(1);
+		// }
+		// else if (deltaX > 0){
+		// 	render.increaseAngleX(1);
+		// }
+		// if (deltaY < 0){
+		// 	render.decreaseAngleY(1);
+		// }
+		// else if (deltaY > 0){
+		// 	render.increaseAngleY(1);
+		// }
+		// render.applyRotation();
 	}
 }
 
