@@ -20,8 +20,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		render.axeZ(-1);
 	else if (key == GLFW_KEY_A && action == GLFW_PRESS)
 		render.axeZ(1);
-	else if (key == GLFW_KEY_X && action == GLFW_PRESS)
-		render.lookAtObj();
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
