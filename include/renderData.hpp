@@ -7,6 +7,7 @@
 //add color
 //add texture
 //add rotation around sym axis (will have to use quarternion)
+
 //scaling/zoom not perfect (works)
 //translation works, may need a visual indicator
 class RenderData{
@@ -26,10 +27,13 @@ class RenderData{
 		void zoomOut(double step);
 		Vector3 getObjCenter() const;
 		std::array<std::array<float, 4>, 4> getMVP() const;
+		//Color handling
+		std::vector<GLfloat> getGrayScaleColor(uint8_t nbOfGray) const;
+		std::vector<GLfloat> cycleColor(void) const;
 		//temp
 		void init(const std::vector<GLfloat> &vertices);
 	private:
-		void calcMVP(void);
+
 		const std::vector<GLfloat> *vertices;
 		Matrix4 MVP;
 		Matrix4 Model;
@@ -43,4 +47,5 @@ class RenderData{
 		Matrix4 View;
 		Vector3 cameraPos;
 		Matrix4 Proj;
+		void calcMVP(void);
 };

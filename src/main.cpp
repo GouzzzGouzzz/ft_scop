@@ -22,6 +22,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		render.axeZ(1);
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	else if (key == GLFW_KEY_T && action == GLFW_PRESS){
+		std::vector<GLfloat> buffer = render.cycleColor();
+		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+	}
 }
 
 void mouse_scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -82,7 +86,7 @@ void init(GLFWwindow* window){
 	LoadOpenGLFunctions();
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 }
 
@@ -95,14 +99,21 @@ void initVertex(GLuint* arrayID, GLuint* buffer, const std::vector<GLfloat>& ver
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
 }
 
+void initColor( GLuint* colorbuffer){
+	std::vector<GLfloat> buffer = render.cycleColor();
+	glGenBuffers(1, colorbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *colorbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
+}
+
 void renderingLoop(GLFWwindow* window, const Parser* parser){
-	GLuint VertexArrayID, vertexbuffer;
+	GLuint VertexArrayID, vertexbuffer, programID, MatrixID, colorbuffer;
 	const std::vector<GLfloat>& vertices = (*parser).getVertices();
 	const std::vector<t_face>& faces = (*parser).getFaces();
-	GLuint programID, MatrixID;
-	render.init(vertices);
 
+	render.init(vertices);
 	initVertex(&VertexArrayID, &vertexbuffer, vertices);
+	initColor(&colorbuffer);
 	programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 	MatrixID = glGetUniformLocation(programID, "MVP");
 	render.lookAtObj();
@@ -110,6 +121,8 @@ void renderingLoop(GLFWwindow* window, const Parser* parser){
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
+
+		//vertices
 		//GL_FALSE or GL_TRUE depending if row major ot column major
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &render.getMVP()[0][0]);
 		glEnableVertexAttribArray(0);
@@ -117,6 +130,12 @@ void renderingLoop(GLFWwindow* window, const Parser* parser){
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
 		glDisableVertexAttribArray(0);
+		//color
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
