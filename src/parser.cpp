@@ -20,48 +20,52 @@ Parser::Parser(std::string filename) {
 		}
 		if (line[0] == 'f' && line[1] == ' ') {
 			t_face face;
-			face.v1 = 0;
-			face.v2 = 0;
-			face.v3 = 0;
-			face.v4 = 0;
 			sscanf(line.c_str(), "f %d %d %d %d", &face.v1, &face.v2, &face.v3, &face.v4);
 			this->faces.push_back(face);
 		}
 	}
 	file.close();
-	sort_vertices_by_faces();
+	sort_and_genUv();
 }
 
-void Parser::sort_vertices_by_faces() {
+void Parser::sort_and_genUv() {
 	std::vector<GLfloat> sorted_vertices;
 	int index;
-
+	const float basic_uv[2] = {0.0f, 1.0f};
 	sorted_vertices.reserve(this->vertices.size());
+
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
+
 		index = (it->v1 - 1) * 3;
+		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		index = (it->v2 - 1) * 3;
+		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		index = (it->v3 - 1) * 3;
+		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		if (it->v4  != 0){
 			index = (it->v1 - 1) * 3;
+			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);
 
 			index = (it->v3 - 1) * 3;
+			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);
 
 			index = (it->v4 - 1) * 3;
+			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);
@@ -78,4 +82,8 @@ const std::vector<GLfloat>& Parser::getVertices() const {
 
 const std::vector<t_face>& Parser::getFaces() const{
 	return this->faces;
+}
+
+const std::vector<t_uv>& Parser::getUv() const{
+	return this->uv;
 }

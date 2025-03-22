@@ -106,21 +106,40 @@ void initColor( GLuint* colorbuffer){
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
 }
 
+void initUv(GLuint* uvbuffer, const std::vector<t_uv>& uv){
+	glGenBuffers(1, uvbuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, *uvbuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * (uv.size() * 2), uv.data(), GL_STATIC_DRAW);
+}
+
 void renderingLoop(GLFWwindow* window, const Parser* parser){
-	GLuint VertexArrayID, vertexbuffer, programID, MatrixID, colorbuffer;
+	GLuint VertexArrayID, vertexbuffer, programID, MatrixID, colorbuffer, uvbuffer;
 	const std::vector<GLfloat>& vertices = (*parser).getVertices();
 	const std::vector<t_face>& faces = (*parser).getFaces();
+
 
 	render.init(vertices);
 	initVertex(&VertexArrayID, &vertexbuffer, vertices);
 	initColor(&colorbuffer);
+	initUv(&uvbuffer, (*parser).getUv());
+
 	programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
+	glUseProgram(programID);
+
+	//texture
+	GLuint texture = loadBMP("textures/wood128.bmp");
+	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glUniform1i(glGetUniformLocation(programID, "useTexture"), GL_TRUE);
+	//end of texture
+
 	MatrixID = glGetUniformLocation(programID, "MVP");
 	render.lookAtObj();
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(programID);
+
 
 		//vertices
 		//GL_FALSE or GL_TRUE depending if row major ot column major
@@ -134,11 +153,15 @@ void renderingLoop(GLFWwindow* window, const Parser* parser){
 		glEnableVertexAttribArray(1);
 		glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
+		//uv texture
+		glEnableVertexAttribArray(2);
+		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+	glDeleteTextures(1, &texture);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

@@ -4,10 +4,10 @@
 #include "defines.hpp"
 #include <GL/glx.h>
 
-//add color
 //add texture
 //add rotation around sym axis (will have to use quarternion)
 
+//add color (done but terrible, and can be optimized)
 //scaling/zoom not perfect (works)
 //translation works, may need a visual indicator
 class RenderData{
@@ -33,7 +33,6 @@ class RenderData{
 		//temp
 		void init(const std::vector<GLfloat> &vertices);
 	private:
-
 		const std::vector<GLfloat> *vertices;
 		Matrix4 MVP;
 		Matrix4 Model;

@@ -10,10 +10,11 @@ class Parser {
 		~Parser();
 		const std::vector<GLfloat>& getVertices() const;
 		const std::vector<t_face>& getFaces() const;
+		const std::vector<t_uv>& getUv() const;
 		bool failed;
 	private:
-		void sort_vertices_by_faces();
+		void sort_and_genUv();
 		std::vector<GLfloat> vertices;
 		std::vector<t_face> faces;
-
+		std::vector<t_uv> uv;
 };
