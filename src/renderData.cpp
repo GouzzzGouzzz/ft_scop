@@ -10,6 +10,9 @@ RenderData::RenderData(const std::vector<GLfloat> &vertices) {
 	moveX = 0;
 	moveY = 0;
 	moveZ = 0;
+	anglex = 0;
+	angley = 0;
+	anglez = 0;
 
 	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
 	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
@@ -28,6 +31,9 @@ void RenderData::init(const std::vector<GLfloat> &vertices) {
 	moveX = 0;
 	moveY = 0;
 	moveZ = 0;
+	anglex = 0;
+	angley = 0;
+	anglez = 0;
 
 	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
 	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
@@ -38,25 +44,26 @@ RenderData::~RenderData() { }
 
 //Rotation Handling
 void RenderData::applyRotation() {
-	Quaternion finalRotation = x * y * z;
-	finalRotation.normalize();
+	Quaternion finalRotation = x * z * y;
 	Rotate = finalRotation.toMatrix();
 	calcMVP();
 }
 
 void RenderData::rotateX(double angle) {
-	x = Quaternion(Vector3(1, 0, 0), angle);
+	anglex += angle;
+	x = Quaternion(Vector3(1, 0, 0), anglex);
 	x.normalize();
 }
 
 void RenderData::rotateY(double angle) {
-	y = Quaternion(Vector3(0, 1, 0), 240);
+	angley+= angle;
+	y = Quaternion(Vector3(0, 1, 0), angley);
 	y.normalize();
 }
 
 void RenderData::rotateZ(double angle) {
-	Quaternion newZ = Quaternion(Vector3(0, 0, 1), angle);
-	z = newZ;
+	anglez += angle;
+	z = Quaternion(Vector3(0, 0, 1), anglez);
 	z.normalize();
 }
 
@@ -141,6 +148,15 @@ void RenderData::lookAtObj() {
 }
 
 void RenderData::calcMVP() {
-	Model = Translate * Rotate * Scale;
+	Matrix4 origin;
+	Matrix4 pos;
+	Vector3 center = getObjCenter();
+
+	pos.identity();
+	origin.identity();
+
+	pos.translate(center.x, center.y, center.z);
+	origin.translate(-center.x, -center.y, -center.z);
+	Model = Translate * pos * Rotate * origin * Scale;
 	MVP = Proj * View * Model;
 }

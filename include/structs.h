@@ -1,5 +1,8 @@
 #pragma once
 
+#include "glFunction.hpp"
+#include "standard.hpp"
+
 typedef struct s_face {
 	int v1;
 	int v2;

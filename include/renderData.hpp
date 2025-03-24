@@ -35,6 +35,7 @@ class RenderData{
 		Matrix4 Scale;
 		float zoom;
 		Matrix4 Rotate;
+		double anglex, angley, anglez;
 		Quaternion x,y,z;
 		Matrix4 Translate;
 		float moveX;

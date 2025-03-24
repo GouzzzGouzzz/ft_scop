@@ -1,20 +1,5 @@
 #include "../include/scop.hpp"
 
-void initWindow(GLFWwindow* window){
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-	glfwSetCursorPosCallback(window, mouse_motion_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetScrollCallback(window, mouse_scroll_callback);
-	glfwSetKeyCallback(window, key_callback);
-	glfwSwapInterval(1);
-	LoadOpenGLFunctions();
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-}
-
 static void initVertex(GLuint* arrayID, GLuint* buffer, std::vector<GLfloat>& vertices){
 	glGenVertexArrays(1, arrayID);
 	glBindVertexArray(*arrayID);

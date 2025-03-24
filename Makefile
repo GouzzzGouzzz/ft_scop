@@ -16,6 +16,7 @@ FILES=main.cpp\
 	draw.cpp\
 	color.cpp\
 	init.cpp\
+	controller.cpp\
 
 SRC=$(FILES:%=$(SRC_DIR)/%.cpp)
 OBJ=$(FILES:%.cpp=$(OBJ_DIR)/%.o)

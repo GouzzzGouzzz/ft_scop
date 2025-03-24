@@ -8,6 +8,4 @@ class Color {
 		Color();
 		~Color();
 		static std::vector<GLfloat> cycleColor(uint size);
-	private:
-		static int cycleIndex;
 };
