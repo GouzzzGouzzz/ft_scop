@@ -7,6 +7,13 @@ Quaternion::Quaternion() {
 	w = 1;
 };
 
+Quaternion::Quaternion(float x, float y, float z, float w){
+	this->x = x;
+	this->y = y;
+	this->z = z;
+	this->w = w;
+}
+
 Quaternion::Quaternion(Vector3 axis, float angle) {
 	angle = angle * M_PI / 180;
 	x = axis.x * sin(angle / 2);
@@ -16,11 +23,10 @@ Quaternion::Quaternion(Vector3 axis, float angle) {
 };
 
 Quaternion Quaternion::operator*(const Quaternion& q) const {
-	return Quaternion(Vector3(
+	return Quaternion(w * q.w - x * q.x - y * q.y - z * q.z,
 		w * q.x + x * q.w + y * q.z - z * q.y,
 		w * q.y - x * q.z + y * q.w + z * q.x,
-		w * q.z + x * q.y - y * q.x + z * q.w
-	), w * q.w - x * q.x - y * q.y - z * q.z);
+		w * q.z + x * q.y - y * q.x + z * q.w);
 };
 
 void Quaternion::normalize() {
@@ -33,32 +39,35 @@ void Quaternion::normalize() {
 	}
 }
 
+//https://www.opengl-tutorial.org/assets/faq_quaternions/index.html#Q54
 Matrix4 Quaternion::toMatrix() const{
 	std::array<std::array<float, 4>, 4> matrix = {};
 	Matrix4 matrix4;
+
 	float xx = x * x;
-	float yy = y * y;
-	float zz = z * z;
 	float xy = x * y;
 	float xz = x * z;
+	float xw = x * w;
+	float yy = y * y;
 	float yz = y * z;
-	float wx = w * x;
-	float wy = w * y;
-	float wz = w * z;
+	float yw = y * w;
+	float zz = z * z;
+	float zw = z * w;
 
-	matrix[0][0] = 1.0f - 2.0f * (yy + zz);
-	matrix[0][1] = 2.0f * (xy - wz);
-	matrix[0][2] = 2.0f * (xz + wy);
+	matrix[0][0] = 1 - 2 * (yy + zz);
+	matrix[1][0] = 2 * (xy - zw);
+	matrix[2][0] = 2 * (xz + yw);
 
-	matrix[1][0] = 2.0f * (xy + wz);
-	matrix[1][1] = 1.0f - 2.0f * (xx + zz);
-	matrix[1][2] = 2.0f * (yz - wx);
+	matrix[0][1] = 2 * (xy + zw);
+	matrix[1][1] = 1 - 2 * (xx + zz);
+	matrix[2][1] = 2 * (yz - xw);
 
-	matrix[2][0] = 2.0f * (xz - wy);
-	matrix[2][1] = 2.0f * (yz + wx);
-	matrix[2][2] = 1.0f - 2.0f * (xx + yy);
+	matrix[0][2] = 2 * (xz - yw);
+	matrix[1][2] = 2 * (yz + xw);
+	matrix[2][2] = 1 - 2 * (xx + yy);
 
-	matrix[3][3] = 1.0f;
+	matrix[3][3] = 1;
+
 	matrix4.setMatrix(matrix);
 	return matrix4;
 }

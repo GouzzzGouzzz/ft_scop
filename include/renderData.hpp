@@ -5,12 +5,6 @@
 #include <GL/glx.h>
 #include "quaternion.hpp"
 
-//add texture
-//add rotation around sym axis (will have to use quarternion)
-
-//add color (done but terrible, and can be optimized)
-//scaling/zoom not perfect (works)
-//translation works, may need a visual indicator
 class RenderData{
 	public:
 		RenderData(const std::vector<GLfloat> &vertices);
@@ -39,6 +33,7 @@ class RenderData{
 	private:
 		const std::vector<GLfloat> *vertices;
 		Matrix4 MVP;
+		//object
 		Matrix4 Model;
 		Matrix4 Scale;
 		float zoom;
@@ -48,6 +43,7 @@ class RenderData{
 		float moveX;
 		float moveY;
 		float moveZ;
+		//camera class
 		Matrix4 View;
 		Vector3 cameraPos;
 		Matrix4 Proj;

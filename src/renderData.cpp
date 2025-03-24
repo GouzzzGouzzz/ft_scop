@@ -37,26 +37,27 @@ void RenderData::init(const std::vector<GLfloat> &vertices) {
 RenderData::~RenderData() { }
 
 //Rotation Handling
-
 void RenderData::applyRotation() {
 	Quaternion finalRotation = x * y * z;
+	finalRotation.normalize();
 	Rotate = finalRotation.toMatrix();
-	Rotate.print();
 	calcMVP();
 }
 
 void RenderData::rotateX(double angle) {
-	Quaternion newX = Quaternion(Vector3(1, 0, 0), angle);
-	x = newX;
+	x = Quaternion(Vector3(1, 0, 0), angle);
+	x.normalize();
 }
 
 void RenderData::rotateY(double angle) {
-	Quaternion newY = Quaternion(Vector3(0, 1, 0), 240);
-	y = newY;
+	y = Quaternion(Vector3(0, 1, 0), 240);
+	y.normalize();
 }
 
 void RenderData::rotateZ(double angle) {
 	Quaternion newZ = Quaternion(Vector3(0, 0, 1), angle);
+	z = newZ;
+	z.normalize();
 }
 
 
@@ -141,7 +142,11 @@ void RenderData::lookAtObj() {
 }
 
 void RenderData::calcMVP() {
+	// std::cout << "before" << std::endl;
+	// Model.print();
 	Model = Translate * Rotate * Scale;
+	// std::cout << "after" << std::endl;
+	// Model.print();
 	MVP = Proj * View * Model;
 }
 
