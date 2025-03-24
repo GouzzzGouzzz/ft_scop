@@ -13,6 +13,9 @@ FILES=main.cpp\
 	moreMath.cpp\
 	renderData.cpp\
 	quaternion.cpp\
+	draw.cpp\
+	color.cpp\
+	init.cpp\
 
 SRC=$(FILES:%=$(SRC_DIR)/%.cpp)
 OBJ=$(FILES:%.cpp=$(OBJ_DIR)/%.o)

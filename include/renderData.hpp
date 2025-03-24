@@ -25,15 +25,12 @@ class RenderData{
 		void zoomOut(double step);
 		Vector3 getObjCenter() const;
 		std::array<std::array<float, 4>, 4> getMVP() const;
-		//Color handling
-		std::vector<GLfloat> getGrayScaleColor(uint8_t nbOfGray) const;
-		std::vector<GLfloat> cycleColor(void) const;
 		//temp
 		void init(const std::vector<GLfloat> &vertices);
 	private:
 		const std::vector<GLfloat> *vertices;
 		Matrix4 MVP;
-		//object
+		//object modification
 		Matrix4 Model;
 		Matrix4 Scale;
 		float zoom;
@@ -43,7 +40,7 @@ class RenderData{
 		float moveX;
 		float moveY;
 		float moveZ;
-		//camera class
+		//camera
 		Matrix4 View;
 		Vector3 cameraPos;
 		Matrix4 Proj;

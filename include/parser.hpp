@@ -8,9 +8,9 @@ class Parser {
 	public:
 		Parser(std::string filename);
 		~Parser();
-		const std::vector<GLfloat>& getVertices() const;
-		const std::vector<t_face>& getFaces() const;
-		const std::vector<t_uv>& getUv() const;
+		std::vector<GLfloat>& getVertices();
+		std::vector<t_face>& getFaces();
+		std::vector<t_uv>& getUv() ;
 		bool failed;
 	private:
 		void sort_and_genUv();

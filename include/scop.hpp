@@ -19,7 +19,11 @@
 #include "quaternion.hpp"
 #include "renderData.hpp"
 #include "parser.hpp"
+#include "color.hpp"
 
+void drawAll(t_bufferID &bufferID, RenderData &render);
+void initWindow(GLFWwindow* window);
+void initAll(t_bufferID &bufferID);
 
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path);
 

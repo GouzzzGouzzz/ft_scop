@@ -6,6 +6,10 @@ bool isRightDrag = false;
 
 RenderData render;
 
+//problem des callback
+//faire systeme texture changement
+//faire systeme de rotation (controller class pour input tout simplement)
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_E && action == GLFW_PRESS)
@@ -23,7 +27,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	else if (key == GLFW_KEY_T && action == GLFW_PRESS){
-		std::vector<GLfloat> buffer = render.cycleColor();
+		std::vector<GLfloat> buffer = Color::cycleColor();
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
 	}
 }
@@ -75,89 +79,33 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos){
 	}
 }
 
-void init(GLFWwindow* window){
-	glfwMakeContextCurrent(window);
-	glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-	glfwSetCursorPosCallback(window, mouse_motion_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetScrollCallback(window, mouse_scroll_callback);
-	glfwSetKeyCallback(window, key_callback);
-	glfwSwapInterval(1);
-	LoadOpenGLFunctions();
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-}
-
-void initVertex(GLuint* arrayID, GLuint* buffer, const std::vector<GLfloat>& vertices){
-	glGenVertexArrays(1, arrayID);
-	glBindVertexArray(*arrayID);
-
-	glGenBuffers(1, buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * vertices.size(), vertices.data(), GL_STATIC_DRAW);
-}
-
-void initColor( GLuint* colorbuffer){
-	std::vector<GLfloat> buffer = render.cycleColor();
-	glGenBuffers(1, colorbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *colorbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
-}
-
-void initUv(GLuint* uvbuffer, const std::vector<t_uv>& uv){
-	glGenBuffers(1, uvbuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, *uvbuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * (uv.size() * 2), uv.data(), GL_STATIC_DRAW);
-}
-
-void renderingLoop(GLFWwindow* window, const Parser* parser){
-	GLuint VertexArrayID, vertexbuffer, programID, MatrixID, colorbuffer, uvbuffer;
-	const std::vector<GLfloat>& vertices = (*parser).getVertices();
-	const std::vector<t_face>& faces = (*parser).getFaces();
+void renderingLoop(GLFWwindow* window, Parser* parser){
+	t_bufferID bufferID;
+	bufferID.vertices = &(*parser).getVertices();
+	bufferID.faces = &(*parser).getFaces();
+	bufferID.uv = &(*parser).getUv();
 
 
-	render.init(vertices);
-	initVertex(&VertexArrayID, &vertexbuffer, vertices);
-	initColor(&colorbuffer);
-	initUv(&uvbuffer, (*parser).getUv());
+	render.init(*bufferID.vertices);
+	initAll(bufferID);
 
-	programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
-	glUseProgram(programID);
+	bufferID.programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
+	glUseProgram(bufferID.programID);
 
 	//texture
 	GLuint texture = loadBMP("textures/wood128.bmp");
-	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+	glUniform1i(glGetUniformLocation(bufferID.programID, "myTextureSampler"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(programID, "useTexture"), GL_TRUE);
+	glUniform1i(glGetUniformLocation(bufferID.programID, "useTexture"), GL_TRUE);
 	//end of texture
 
-	MatrixID = glGetUniformLocation(programID, "MVP");
+	bufferID.MatrixID = glGetUniformLocation(bufferID.programID, "MVP");
 	render.lookAtObj();
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-		//vertices
-		//GL_FALSE or GL_TRUE depending if row major ot column major
-		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &render.getMVP()[0][0]);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
-		glDisableVertexAttribArray(0);
-		//color
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		//uv texture
-		glEnableVertexAttribArray(2);
-		glBindBuffer(GL_ARRAY_BUFFER, uvbuffer);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-
+		drawAll(bufferID, render);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -196,6 +144,6 @@ int main(int ac, char **av) {
 		glfwTerminate();
 		return -1;
 	}
-	init(window);
+	initWindow(window);
 	renderingLoop(window, &parser);
 }

@@ -81,7 +81,6 @@ void RenderData::axeZ(double step) {
 }
 
 //Scaling Handling (Zoom in/out)
-
 void RenderData::zoomIn(double step) {
 	zoom += step;
 	Scale.scale(zoom, zoom, zoom);
@@ -142,69 +141,6 @@ void RenderData::lookAtObj() {
 }
 
 void RenderData::calcMVP() {
-	// std::cout << "before" << std::endl;
-	// Model.print();
 	Model = Translate * Rotate * Scale;
-	// std::cout << "after" << std::endl;
-	// Model.print();
 	MVP = Proj * View * Model;
-}
-
-std::vector<GLfloat> RenderData::cycleColor() const
-{
-	static uint8_t nbOfGray = 0;
-	std::vector<GLfloat> buffer = getGrayScaleColor(nbOfGray);
-	nbOfGray++;
-	if (nbOfGray == 4)
-		nbOfGray = 0;
-	return buffer;
-}
-
-std::vector<GLfloat> RenderData::getGrayScaleColor(uint8_t nbOfGray) const {
-	std::vector<GLfloat> color;
-	std::vector<GLfloat> grayScale;
-	int reset;
-	int offset = 0;
-	if (nbOfGray == 0){
-		grayScale = {
-			0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f
-		};
-		reset = 8;
-	}
-	else if (nbOfGray == 1){
-		grayScale = {
-			0.1f, 0.1f, 0.2f, 0.2f, 0.3f, 0.3f, 0.4f, 0.4f,
-			0.5f, 0.5f, 0.6f, 0.6f, 0.7f, 0.7f, 0.8f, 0.8f
-		};
-		reset = 16;
-	}
-	else if (nbOfGray == 2){
-		grayScale = {
-			0.1f, 0.1f, 0.1f, 0.1f, 0.2f, 0.2f, 0.2f, 0.2f, 0.3f, 0.3f, 0.3f, 0.3f, 0.4f, 0.4f, 0.4f,
-			0.4f, 0.5f, 0.5f, 0.5f, 0.5f, 0.6f, 0.6f, 0.6f, 0.6f, 0.7f, 0.7f, 0.7f, 0.7f, 0.8f, 0.8f,
-			0.8f, 0.8f
-		};
-		reset = 32;
-	}
-	else if (nbOfGray == 3){
-		grayScale = {
-			0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.1f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f, 0.2f,
-			0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3f, 0.3, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f, 0.4f,
-			0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f, 0.6f,
-			0.7f, 0.7f, 0.7f, 0.7f, 0.7f, 0.7f, 0.7f, 0.7f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f, 0.8f
-		};
-		reset = 64;
-	}
-	std::cout << "Using the " << reset << " gray scale" << std::endl;
-
-	color.reserve((*vertices).size());
-	for (size_t i = 0; i < (*vertices).size(); i += 3) {
-		color.push_back(grayScale[offset]);
-		color.push_back(grayScale[offset]);
-		color.push_back(grayScale[offset]);
-		offset++;
-		if (offset == reset)
-			offset = 0;
-	}
-	return color;
 }

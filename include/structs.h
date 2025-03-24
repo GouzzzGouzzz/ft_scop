@@ -26,3 +26,17 @@ typedef struct t_uv {
 	t_uv() : u(0), v(0) {};
 	t_uv(float u_val, float v_val) : u(u_val), v(v_val) {};
 } t_uv;
+
+typedef struct t_bufferID {
+	GLuint vertexArrayID;
+	GLuint programID;
+	GLuint MatrixID;
+	GLuint vertexBuffer;
+	GLuint colorBuffer;
+	GLuint uvBuffer;
+	std::vector<GLfloat>* vertices;
+	std::vector<t_face>* faces;
+	std::vector<t_uv>* uv;
+	t_bufferID() : vertexArrayID(0), programID(0), MatrixID(0), vertexBuffer(0), colorBuffer(0), uvBuffer(0), vertices(), faces(), uv() {};
+
+} t_bufferID;

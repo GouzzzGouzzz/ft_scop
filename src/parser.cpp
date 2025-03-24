@@ -76,14 +76,14 @@ void Parser::sort_and_genUv() {
 
 Parser::~Parser() {}
 
-const std::vector<GLfloat>& Parser::getVertices() const {
+std::vector<GLfloat>& Parser::getVertices() {
 	return this->vertices;
 }
 
-const std::vector<t_face>& Parser::getFaces() const{
+std::vector<t_face>& Parser::getFaces(){
 	return this->faces;
 }
 
-const std::vector<t_uv>& Parser::getUv() const{
+std::vector<t_uv>& Parser::getUv(){
 	return this->uv;
 }
