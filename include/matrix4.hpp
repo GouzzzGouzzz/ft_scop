@@ -4,6 +4,7 @@
 #include "standard.hpp"
 #include "moreMath.hpp"
 
+
 //Use row-major matrix
 class Matrix4{
 	public:
@@ -16,10 +17,10 @@ class Matrix4{
 		void identity();
 		void translate(float x, float y, float z);
 		void scale(float x, float y, float z);
-		void rotate(float angle, Vector3 axis);
 		void view(Vector3 eye, Vector3 center, Vector3 up);
 		void perspective(const float fovy, const float aspect, const float zNear, const float zFar);
 		std::array<std::array<float, 4>, 4> getMatrix() const;
+		void setMatrix(const std::array<std::array<float, 4>, 4> mat);
 		void print() const;
 	private:
 		std::array<std::array<float, 4>, 4> m;

@@ -64,50 +64,50 @@ void Matrix4::scale(float x, float y, float z) {
 
 //use degree as input in vector3(x,y,z)
 //same as glm::rotate
-void Matrix4::rotate(float angle, Vector3 axe){
-	float a = angle * M_PI / 180;
-	float c = cos(a);
-	float s = sin(a);
+// void Matrix4::rotate(Quaternion q){
+	// float a = angle * M_PI / 180;
+	// float c = cos(a);
+	// float s = sin(a);
 
-	Vector3 axis(normalize(axe));
-	float tempValue = (1 - c);
-	Vector3 temp(tempValue * axis.x, tempValue * axis.y, tempValue * axis.z);
+	// Vector3 axis(normalize(axe));
+	// float tempValue = (1 - c);
+	// Vector3 temp(tempValue * axis.x, tempValue * axis.y, tempValue * axis.z);
 
 
-	Matrix4 Rotate;
-	Rotate.m[0][0] = c + temp.x * axis.x;
-	Rotate.m[0][1] = temp.x * axis.y + s * axis.z;
-	Rotate.m[0][2] = temp.x * axis.z - s * axis.y;
+	// Matrix4 Rotate;
+	// Rotate.m[0][0] = c + temp.x * axis.x;
+	// Rotate.m[0][1] = temp.x * axis.y + s * axis.z;
+	// Rotate.m[0][2] = temp.x * axis.z - s * axis.y;
 
-	Rotate.m[1][0] = temp.y * axis.x - s * axis.z;
-	Rotate.m[1][1] = c + temp.y * axis.y;
-	Rotate.m[1][2] = temp.y * axis.z + s * axis.x;
+	// Rotate.m[1][0] = temp.y * axis.x - s * axis.z;
+	// Rotate.m[1][1] = c + temp.y * axis.y;
+	// Rotate.m[1][2] = temp.y * axis.z + s * axis.x;
 
-	Rotate.m[2][0] = temp.z * axis.x + s * axis.y;
-	Rotate.m[2][1] = temp.z * axis.y - s * axis.x;
-	Rotate.m[2][2] = c + temp.z * axis.z;
+	// Rotate.m[2][0] = temp.z * axis.x + s * axis.y;
+	// Rotate.m[2][1] = temp.z * axis.y - s * axis.x;
+	// Rotate.m[2][2] = c + temp.z * axis.z;
 
-	Matrix4 Result;
+	// Matrix4 Result;
 
-	Result.m[0][0] = m[0][0] * Rotate.m[0][0] + m[1][0] * Rotate.m[0][1] + m[2][0] * Rotate.m[0][2];
-	Result.m[0][1] = m[0][1] * Rotate.m[0][0] + m[1][1] * Rotate.m[0][1] + m[2][1] * Rotate.m[0][2];
-	Result.m[0][2] = m[0][2] * Rotate.m[0][0] + m[1][2] * Rotate.m[0][1] + m[2][2] * Rotate.m[0][2];
+	// Result.m[0][0] = m[0][0] * Rotate.m[0][0] + m[1][0] * Rotate.m[0][1] + m[2][0] * Rotate.m[0][2];
+	// Result.m[0][1] = m[0][1] * Rotate.m[0][0] + m[1][1] * Rotate.m[0][1] + m[2][1] * Rotate.m[0][2];
+	// Result.m[0][2] = m[0][2] * Rotate.m[0][0] + m[1][2] * Rotate.m[0][1] + m[2][2] * Rotate.m[0][2];
 
-	Result.m[1][0] = m[0][0] * Rotate.m[1][0] + m[1][0] * Rotate.m[1][1] + m[2][0] * Rotate.m[1][2];
-	Result.m[1][1] = m[0][1] * Rotate.m[1][0] + m[1][1] * Rotate.m[1][1] + m[2][1] * Rotate.m[1][2];
-	Result.m[1][2] = m[0][2] * Rotate.m[1][0] + m[1][2] * Rotate.m[1][1] + m[2][2] * Rotate.m[1][2];
+	// Result.m[1][0] = m[0][0] * Rotate.m[1][0] + m[1][0] * Rotate.m[1][1] + m[2][0] * Rotate.m[1][2];
+	// Result.m[1][1] = m[0][1] * Rotate.m[1][0] + m[1][1] * Rotate.m[1][1] + m[2][1] * Rotate.m[1][2];
+	// Result.m[1][2] = m[0][2] * Rotate.m[1][0] + m[1][2] * Rotate.m[1][1] + m[2][2] * Rotate.m[1][2];
 
-	Result.m[2][0] = m[0][0] * Rotate.m[2][0] + m[1][0] * Rotate.m[2][1] + m[2][0] * Rotate.m[2][2];
-	Result.m[2][1] = m[0][1] * Rotate.m[2][0] + m[1][1] * Rotate.m[2][1] + m[2][1] * Rotate.m[2][2];
-	Result.m[2][2] = m[0][2] * Rotate.m[2][0] + m[1][2] * Rotate.m[2][1] + m[2][2] * Rotate.m[2][2];
+	// Result.m[2][0] = m[0][0] * Rotate.m[2][0] + m[1][0] * Rotate.m[2][1] + m[2][0] * Rotate.m[2][2];
+	// Result.m[2][1] = m[0][1] * Rotate.m[2][0] + m[1][1] * Rotate.m[2][1] + m[2][1] * Rotate.m[2][2];
+	// Result.m[2][2] = m[0][2] * Rotate.m[2][0] + m[1][2] * Rotate.m[2][1] + m[2][2] * Rotate.m[2][2];
 
-	Result.m[3][0] = m[3][0];
-	Result.m[3][1] = m[3][1];
-	Result.m[3][2] = m[3][2];
-	Result.m[3][3] = m[3][3];
+	// Result.m[3][0] = m[3][0];
+	// Result.m[3][1] = m[3][1];
+	// Result.m[3][2] = m[3][2];
+	// Result.m[3][3] = m[3][3];
 
-	*this = Result;
-}
+	// *this = Result;
+// }
 
 //Set the matrix to identity (1,1,1,1)
 void Matrix4::identity(){
@@ -174,6 +174,10 @@ void Matrix4::convertToColumnMajor(){
 
 std::array<std::array<float, 4>, 4> Matrix4::getMatrix() const{
 	return m;
+}
+
+void Matrix4::setMatrix(const std::array<std::array<float, 4>, 4> mat){
+	m = mat;
 }
 
 void Matrix4::print() const {

@@ -16,6 +16,7 @@
 #include "structs.h"
 #include "moreMath.hpp"
 #include "matrix4.hpp"
+#include "quaternion.hpp"
 #include "renderData.hpp"
 #include "parser.hpp"
 

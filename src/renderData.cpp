@@ -16,7 +16,7 @@ RenderData::RenderData(const std::vector<GLfloat> &vertices) {
 	calcMVP();
 }
 
-RenderData::RenderData() { }
+RenderData::RenderData() { };
 
 void RenderData::init(const std::vector<GLfloat> &vertices) {
 	this->vertices = &vertices;
@@ -35,6 +35,29 @@ void RenderData::init(const std::vector<GLfloat> &vertices) {
 }
 
 RenderData::~RenderData() { }
+
+//Rotation Handling
+
+void RenderData::applyRotation() {
+	Quaternion finalRotation = x * y * z;
+	Rotate = finalRotation.toMatrix();
+	Rotate.print();
+	calcMVP();
+}
+
+void RenderData::rotateX(double angle) {
+	Quaternion newX = Quaternion(Vector3(1, 0, 0), angle);
+	x = newX;
+}
+
+void RenderData::rotateY(double angle) {
+	Quaternion newY = Quaternion(Vector3(0, 1, 0), 240);
+	y = newY;
+}
+
+void RenderData::rotateZ(double angle) {
+	Quaternion newZ = Quaternion(Vector3(0, 0, 1), angle);
+}
 
 
 //Translation Handling (Move object)

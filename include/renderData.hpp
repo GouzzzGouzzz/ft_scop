@@ -3,6 +3,7 @@
 #include "matrix4.hpp"
 #include "defines.hpp"
 #include <GL/glx.h>
+#include "quaternion.hpp"
 
 //add texture
 //add rotation around sym axis (will have to use quarternion)
@@ -17,7 +18,10 @@ class RenderData{
 		~RenderData();
 		void lookAtObj();
 		//Rotation Handling
-		//use quarterion for rotation
+		void applyRotation();
+		void rotateX(double angle);
+		void rotateY(double angle);
+		void rotateZ(double angle);
 		//Translation Handling (Move object)
 		void axeX(double step);
 		void axeY(double step);
@@ -39,6 +43,7 @@ class RenderData{
 		Matrix4 Scale;
 		float zoom;
 		Matrix4 Rotate;
+		Quaternion x,y,z;
 		Matrix4 Translate;
 		float moveX;
 		float moveY;

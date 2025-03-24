@@ -16,13 +16,14 @@ int main() {
         std::cout << std::endl;
     }
     // View matrix
+	glm::quat q = glm::angleAxis(glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 View = glm::lookAt(
         glm::vec3(2, 2, 2), // Camera position
         glm::vec3(0, 0, 0), // Target
         glm::vec3(0, 1, 0)  // Up vector
     );
 	std::cout << "GLM : View" << std::endl;
-
+	glm::rotate(View, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     m = glm::value_ptr(View);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {

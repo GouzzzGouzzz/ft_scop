@@ -59,19 +59,19 @@ void mouse_motion_callback(GLFWwindow* window, double xpos, double ypos){
 		double deltaY = ypos - lastY;
 		lastX = xpos;
 		lastY = ypos;
-		// if (deltaX < 0){
-		// 	render.decreaseAngleX(1);
-		// }
-		// else if (deltaX > 0){
-		// 	render.increaseAngleX(1);
-		// }
-		// if (deltaY < 0){
-		// 	render.decreaseAngleY(1);
-		// }
-		// else if (deltaY > 0){
-		// 	render.increaseAngleY(1);
-		// }
-		// render.applyRotation();
+		if (deltaX < 0){
+			render.rotateX(45);
+		}
+		else if (deltaX > 0){
+			render.rotateX(0);
+		}
+		if (deltaY < 0){
+			render.rotateY(0);
+		}
+		else if (deltaY > 0){
+			render.rotateY(0);
+		}
+		render.applyRotation();
 	}
 }
 
