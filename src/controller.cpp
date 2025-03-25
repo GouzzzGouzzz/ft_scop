@@ -29,6 +29,8 @@ void Controller::setWindow(GLFWwindow* window){
 }
 
 void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods){
+	(void)scancode;
+	(void)mods;
 	if (key == GLFW_KEY_E && action == GLFW_PRESS)
 		render->axeX(1);
 	else if (key == GLFW_KEY_Q && action == GLFW_PRESS)
@@ -52,40 +54,18 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		std::vector<GLfloat> buffer = Color::cycleColor(verticesSize);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferID->colorBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
-	}//test
+	}
 	else if (key == GLFW_KEY_X && action == GLFW_PRESS){
 		toggleTexture();
 	}
 	else if (key == GLFW_KEY_R && action == GLFW_PRESS){
-		GLuint texture = TextureLoader::cycleTextureDir();
-	}
-	else if (key == GLFW_KEY_J && GLFW_PRESS){
-		render->rotateY(1);
-		render->applyRotation();
-	}
-	else if (key == GLFW_KEY_L && GLFW_PRESS){
-		render->rotateY(-1);
-		render->applyRotation();
-	}
-	else if (key == GLFW_KEY_I && GLFW_PRESS){
-		render->rotateX(1);
-		render->applyRotation();
-	}
-	else if (key == GLFW_KEY_K && GLFW_PRESS){
-		render->rotateX(-1);
-		render->applyRotation();
-	}
-	else if (key == GLFW_KEY_U && GLFW_PRESS){
-		render->rotateZ(1);
-		render->applyRotation();
-	}
-	else if (key == GLFW_KEY_O && GLFW_PRESS){
-		render->rotateZ(-1);
-		render->applyRotation();
+		TextureLoader::cycleTextureDir();
 	}
 }
 
 void Controller::scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
+	(void)xoffset;
+	(void)window;
 	if (yoffset > 0) {
 		render->zoomIn(1);
 	}
@@ -95,6 +75,7 @@ void Controller::scrollCallback(GLFWwindow* window, double xoffset, double yoffs
 }
 
 void Controller::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
+	(void)mods;
 	if (button == GLFW_MOUSE_BUTTON_RIGHT)
 	{
 		if (action == GLFW_PRESS)

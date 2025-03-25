@@ -1,7 +1,7 @@
 NAME=scop
 TESTNAME=test
 CXX=g++
-CXXFLAGS=-g #-Wall -Werror -Wextra
+CXXFLAGS=-g -Wall -Werror -Wextra
 CXXLINKFLAGS=-lglfw -lGL
 OBJ_DIR=obj
 SRC_DIR=src

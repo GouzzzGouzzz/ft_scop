@@ -1,10 +1,10 @@
 #include "../include/textureLoader.hpp"
 
 GLuint TextureLoader::cycleTextureDir(){
-	static int index = -1;
+	static uint index = 0;
 	static std::string path = "textures/";
 	static std::vector<std::string> files;
-	if (index == -1){
+	if (files.size() == 0){
 		for (const std::filesystem::__cxx11::directory_entry& entry : std::filesystem::directory_iterator(path)) {
 			if (!entry.is_directory()) {
 				if (entry.path().filename().string().find(".bmp") != std::string::npos) {
@@ -12,14 +12,13 @@ GLuint TextureLoader::cycleTextureDir(){
 				}
 			}
 		}
-		index = 0;
 	}
 	if (files.size() == 0){
 		std::cerr << "No texture found in textures directory" << std::endl;
 		return 0;
 	}
 	GLuint texture = 0;
-	int failed = -1;
+	uint failed = -1;
 	do{
 		failed++;
 		if (failed == files.size()){

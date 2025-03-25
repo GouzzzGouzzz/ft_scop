@@ -31,7 +31,6 @@ Parser::Parser(std::string filename) {
 void Parser::sort_and_genUv() {
 	std::vector<GLfloat> sorted_vertices;
 	int index;
-	const float basic_uv[2] = {0.0f, 1.0f};
 	sorted_vertices.reserve(this->vertices.size());
 
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
