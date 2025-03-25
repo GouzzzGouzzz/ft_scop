@@ -2,35 +2,24 @@
 
 //faire systeme texture changement
 
-void renderingLoop(GLFWwindow* window, Parser* parser, RenderData* render) {
-	t_bufferID bufferID;
-	bufferID.vertices = &(*parser).getVertices();
-	bufferID.faces = &(*parser).getFaces();
-	bufferID.uv = &(*parser).getUv();
+void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_bufferID& bufferID) {
+	bufferID.vertices = &parser.getVertices();
+	bufferID.faces = &parser.getFaces();
+	bufferID.uv = &parser.getUv();
 
-	render->init(*bufferID.vertices);
 	initAll(bufferID);
 	bufferID.programID = LoadShaders( "shaders/vertexShader.glsl", "shaders/fragmentShader.glsl" );
 	glUseProgram(bufferID.programID);
-
-	//texture
-	GLuint texture = loadBMP("textures/wood128.bmp");
-	glUniform1i(glGetUniformLocation(bufferID.programID, "myTextureSampler"), 0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(bufferID.programID, "useTexture"), GL_TRUE);
-	//end of texture
-
 	bufferID.MatrixID = glGetUniformLocation(bufferID.programID, "MVP");
-	render->lookAtObj();
+	render.lookAtObj();
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		drawAll(bufferID, *render);
+		drawAll(bufferID, render);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-	glDeleteTextures(1, &texture);
+	// glDeleteTextures(1, &texture);
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }
@@ -65,9 +54,10 @@ int main(int ac, char **av) {
 		glfwTerminate();
 		return -1;
 	}
-	RenderData render;
-	Controller controller(render, parser.getVertices().size());
+	RenderData render(parser.getVertices());
+	t_bufferID bufferID;
+	Controller controller(render, parser.getVertices().size(), bufferID);
 	controller.setWindow(window);
 	LoadOpenGLFunctions();
-	renderingLoop(window, &parser, &render);
+	renderingLoop(window, parser, render, bufferID);
 }

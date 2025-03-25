@@ -27,6 +27,7 @@ GL_DELETESHADER glDeleteShader = nullptr;
 GL_GETUNIFORMLOCATION glGetUniformLocation = nullptr;
 GL_UNIFORMMATRIX4FV glUniformMatrix4fv = nullptr;
 GL_UNIFORM1I glUniform1i = nullptr;
+GL_GETUNIFORMIV glGetUniformiv = nullptr;
 
 void LoadOpenGLFunctions() {
 	// Load OpenGL functions
@@ -56,50 +57,5 @@ void LoadOpenGLFunctions() {
 	glGetUniformLocation = (GL_GETUNIFORMLOCATION)glXGetProcAddress((const GLubyte*)"glGetUniformLocation");
 	glUniformMatrix4fv = (GL_UNIFORMMATRIX4FV)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
 	glUniform1i = (GL_UNIFORM1I)glXGetProcAddress((const GLubyte*)"glUniform1i");
-}
-
-//https://www.opengl-tutorial.org/beginners-tutorials/tutorial-5-a-textured-cube/
-
-//return a texture ID to use with opegGL
-//load a BMP file using our custom loader
-GLuint loadBMP(const char* imagepath){
-	char header[54];
-	unsigned int dataPos;
-	unsigned int width, height;
-	unsigned int imageSize;
-	unsigned char * data;
-	std::ifstream file(imagepath);
-	if (!file.is_open()) {
-		std::cerr << "Failed to open texutre file" << std::endl;
-		return 0;
-	}
-	file.read(header, 54);
-	if (file.gcount() != 54){
-		std::cerr << "Failed to read file header" << std::endl;
-		return 0;
-	}
-	if ( header[0] != 'B' || header[1] != 'M' ){
-		std::cerr << "Invalid BMP file" << std::endl;
-		return 0;
-	}
-	dataPos = *(int*)&(header[0x0A]);
-	imageSize = *(int*)&(header[0x22]);
-	width = *(int*)&(header[0x12]);
-	height = *(int*)&(header[0x16]);
-	if (imageSize == 0)
-		imageSize = width * height * 3;
-	if (dataPos == 0)
-		dataPos = 54;
-	data = new unsigned char[imageSize];
-	file.read((char*)data, imageSize);
-	file.close();
-
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-	//filtering
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	return textureID;
+	glGetUniformiv = (GL_GETUNIFORMIV)glXGetProcAddress((const GLubyte*)"glGetUniformiv");
 }

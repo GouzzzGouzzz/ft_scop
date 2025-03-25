@@ -21,6 +21,7 @@
 #include "parser.hpp"
 #include "color.hpp"
 #include "controller.hpp"
+#include "textureLoader.hpp"
 
 void drawAll(t_bufferID &bufferID, RenderData &render);
 void initAll(t_bufferID &bufferID);

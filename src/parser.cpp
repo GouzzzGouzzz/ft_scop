@@ -37,35 +37,35 @@ void Parser::sort_and_genUv() {
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
 
 		index = (it->v1 - 1) * 3;
-		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		index = (it->v2 - 1) * 3;
-		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		index = (it->v3 - 1) * 3;
-		uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 		sorted_vertices.push_back(this->vertices[index]);
 		sorted_vertices.push_back(this->vertices[index + 1]);
 		sorted_vertices.push_back(this->vertices[index + 2]);
 		if (it->v4  != 0){
 			index = (it->v1 - 1) * 3;
-			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);
 
 			index = (it->v3 - 1) * 3;
-			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);
 
 			index = (it->v4 - 1) * 3;
-			uv.push_back({(this->vertices[index] + 1.0f * 0.5f),(this->vertices[index+2] + 1.0f * 0.5f)});
+			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
 			sorted_vertices.push_back(this->vertices[index]);
 			sorted_vertices.push_back(this->vertices[index + 1]);
 			sorted_vertices.push_back(this->vertices[index + 2]);

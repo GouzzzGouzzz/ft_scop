@@ -17,6 +17,7 @@ FILES=main.cpp\
 	color.cpp\
 	init.cpp\
 	controller.cpp\
+	textureLoader.cpp\
 
 SRC=$(FILES:%=$(SRC_DIR)/%.cpp)
 OBJ=$(FILES:%.cpp=$(OBJ_DIR)/%.o)

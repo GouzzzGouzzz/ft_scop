@@ -1,13 +1,15 @@
 #include "../include/controller.hpp"
 
 RenderData* Controller::render = nullptr;
+t_bufferID* Controller::bufferID = nullptr;
 double Controller::lastX = 0.0;
 double Controller::lastY = 0.0;
 bool Controller::isRightDrag = false;
 uint Controller::verticesSize = 0;
 
-Controller::Controller(RenderData& render,uint verticesSize){
+Controller::Controller(RenderData& render,uint verticesSize, t_bufferID& bufferID){
 	this->render = &render;
+	this->bufferID = &bufferID;
 	this->verticesSize = verticesSize;
 }
 
@@ -42,9 +44,21 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	else if (key == GLFW_KEY_T && action == GLFW_PRESS){
+		GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
+		GLint state;
+		glGetUniformiv(bufferID->programID, val, &state);
+		if (state == GL_TRUE)
+			return ;
 		std::vector<GLfloat> buffer = Color::cycleColor(verticesSize);
+		glBindBuffer(GL_ARRAY_BUFFER, bufferID->colorBuffer);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * buffer.size(), buffer.data(), GL_STATIC_DRAW);
 	}//test
+	else if (key == GLFW_KEY_X && action == GLFW_PRESS){
+		toggleTexture();
+	}
+	else if (key == GLFW_KEY_R && action == GLFW_PRESS){
+		GLuint texture = TextureLoader::cycleTextureDir();
+	}
 	else if (key == GLFW_KEY_J && GLFW_PRESS){
 		render->rotateY(1);
 		render->applyRotation();
@@ -105,7 +119,6 @@ void Controller::mouseMotionCallback(GLFWwindow* window, double xpos, double ypo
 		float angleX = deltaX * 0.2;
 		float angleY = deltaY * 0.2;
 
-		// std::cout << "angleX: " << angleX << " angleY: " << angleY << std::endl;
 		if (glfwGetKey(window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS) {
 			render->rotateX(angleX);
 		} else {
@@ -113,5 +126,19 @@ void Controller::mouseMotionCallback(GLFWwindow* window, double xpos, double ypo
 			render->rotateZ(-angleY);
 		}
 		render->applyRotation();
+	}
+}
+
+void Controller::toggleTexture(){
+	GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
+	GLint state;
+	glGetUniformiv(bufferID->programID, val, &state);
+	if (state == GL_TRUE){
+		std::cout << "Texture is now off" << std::endl;
+		glUniform1i(glGetUniformLocation(bufferID->programID, "useTexture"), GL_FALSE);
+	}
+	else{
+		std::cout << "Texture is now on" << std::endl;
+		glUniform1i(glGetUniformLocation(bufferID->programID, "useTexture"), GL_TRUE);
 	}
 }

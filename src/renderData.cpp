@@ -19,27 +19,6 @@ RenderData::RenderData(const std::vector<GLfloat> &vertices) {
 	calcMVP();
 }
 
-RenderData::RenderData() { };
-
-void RenderData::init(const std::vector<GLfloat> &vertices) {
-	this->vertices = &vertices;
-	Model.identity();
-	Scale.identity();
-	Rotate.identity();
-	Translate.identity();
-	zoom = 1;
-	moveX = 0;
-	moveY = 0;
-	moveZ = 0;
-	anglex = 0;
-	angley = 0;
-	anglez = 0;
-
-	Proj.perspective(45.0f, float(W_WIDTH)/float(W_HEIGHT), 0.1f, 1000.0f);
-	View.view(Vector3(0,0,0), getObjCenter(), Vector3(0, 1, 0));
-	calcMVP();
-}
-
 RenderData::~RenderData() { }
 
 //Rotation Handling

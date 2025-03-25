@@ -8,7 +8,6 @@
 class RenderData{
 	public:
 		RenderData(const std::vector<GLfloat> &vertices);
-		RenderData();
 		~RenderData();
 		void lookAtObj();
 		//Rotation Handling
@@ -25,8 +24,6 @@ class RenderData{
 		void zoomOut(double step);
 		Vector3 getObjCenter() const;
 		std::array<std::array<float, 4>, 4> getMVP() const;
-		//temp
-		void init(const std::vector<GLfloat> &vertices);
 	private:
 		const std::vector<GLfloat> *vertices;
 		Matrix4 MVP;

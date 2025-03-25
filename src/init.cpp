@@ -1,5 +1,12 @@
 #include "../include/scop.hpp"
 
+static void initTexture(GLuint programID){
+	GLuint texture = TextureLoader::cycleTextureDir();
+	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+}
+
 static void initVertex(GLuint* arrayID, GLuint* buffer, std::vector<GLfloat>& vertices){
 	glGenVertexArrays(1, arrayID);
 	glBindVertexArray(*arrayID);
@@ -27,4 +34,5 @@ void initAll(t_bufferID &bufferID)
 	initVertex(&bufferID.vertexArrayID, &bufferID.vertexBuffer, *bufferID.vertices);
 	initColor(&bufferID.colorBuffer, bufferID.vertices->size());
 	initUv(&bufferID.uvBuffer, *bufferID.uv);
+	initTexture(bufferID.programID);
 }

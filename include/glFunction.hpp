@@ -32,6 +32,7 @@ typedef void (*GL_DELETESHADER)(GLuint);
 typedef GLuint (*GL_GETUNIFORMLOCATION)(GLuint, const GLchar*);
 typedef void (*GL_UNIFORMMATRIX4FV)(GLint, GLsizei, GLboolean, const GLfloat*);
 typedef void (*GL_UNIFORM1I)(GLint, GLint);
+typedef void (*GL_GETUNIFORMIV)(GLuint, GLint, GLint*);
 
 //Var to VAOS functions
 extern GL_GENBUFFERS glGenBuffers;
@@ -62,6 +63,7 @@ extern GL_DELETESHADER glDeleteShader;
 extern GL_GETUNIFORMLOCATION glGetUniformLocation;
 extern GL_UNIFORMMATRIX4FV glUniformMatrix4fv;
 extern GL_UNIFORM1I glUniform1i;
+extern GL_GETUNIFORMIV glGetUniformiv;
 
 void LoadOpenGLFunctions();
 GLuint loadBMP(const char * imagepath);
