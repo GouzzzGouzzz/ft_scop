@@ -59,7 +59,7 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		toggleTexture();
 	}
 	else if (key == GLFW_KEY_R && action == GLFW_PRESS){
-		TextureLoader::cycleTextureDir();
+		bufferID->textureID = TextureLoader::cycleTextureDir();
 	}
 }
 

@@ -1,5 +1,7 @@
 #include "../include/textureLoader.hpp"
 
+GLuint TextureLoader::latestTexture = 0;
+
 GLuint TextureLoader::cycleTextureDir(){
 	static uint index = 0;
 	static std::string path = "textures/";
@@ -69,13 +71,14 @@ GLuint TextureLoader::loadTexture(const char* imagepath){
 	file.read((char*)data, imageSize);
 	file.close();
 
-	GLuint textureID;
-	glGenTextures(1, &textureID);
-	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glDeleteTextures(1, &latestTexture);
+	glGenTextures(1, &latestTexture);
+	glBindTexture(GL_TEXTURE_2D, latestTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
 	//filtering
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	delete[] data;
-	return textureID;
+	return latestTexture;
 }

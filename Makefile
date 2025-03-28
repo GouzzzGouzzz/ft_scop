@@ -43,7 +43,4 @@ fclean: clean
 
 re: fclean all
 
-test:
-	g++ -o $(TESTNAME) test.cpp -lstdc++ -lm
-
 .PHONY: all re clean fclean test

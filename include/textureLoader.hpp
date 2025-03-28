@@ -8,4 +8,5 @@ class TextureLoader {
 		static GLuint cycleTextureDir();
 	private:
 		static GLuint loadTexture(const char* path);
+		static GLuint latestTexture;
 };

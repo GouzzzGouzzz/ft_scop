@@ -13,6 +13,10 @@ typedef void (*GL_VERTEXATTRIBPOINTER)(GLuint, GLint, GLenum, GLboolean, GLsizei
 typedef void (*GL_ENABLEVERTEXATTRIBARRAY)(GLuint);
 typedef void (*GL_DISABLEVERTEXATTRIBARRAY)(GLuint);
 
+typedef void (*GL_DELETEPROGRAM)(GLuint);
+typedef void (*GL_DELETEVERTEXARRAYS)(GLsizei, const GLuint*);
+typedef void (*GL_DELETEVERTEXBUFFERS)(GLsizei, const GLuint*);
+
 //Shaders functions
 typedef GLuint (*GL_CREATESHADER)(GLenum);
 typedef void (*GL_SHADERSOURCE)(GLuint, GLsizei, const GLchar**, const GLint*);
@@ -44,6 +48,10 @@ extern GL_VERTEXATTRIBPOINTER glVertexAttribPointer;
 extern GL_ENABLEVERTEXATTRIBARRAY glEnableVertexAttribArray;
 extern GL_DISABLEVERTEXATTRIBARRAY glDisableVertexAttribArray;
 
+extern GL_DELETEPROGRAM glDeleteProgram;
+extern GL_DELETEVERTEXARRAYS glDeleteVertexArrays;
+extern GL_DELETEVERTEXBUFFERS glDeleteBuffers;
+
 //Var to Shader Functions
 extern GL_CREATESHADER glCreateShader;
 extern GL_SHADERSOURCE glShaderSource;
@@ -66,4 +74,3 @@ extern GL_UNIFORM1I glUniform1i;
 extern GL_GETUNIFORMIV glGetUniformiv;
 
 void LoadOpenGLFunctions();
-GLuint loadBMP(const char * imagepath);

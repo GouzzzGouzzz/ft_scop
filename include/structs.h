@@ -37,9 +37,10 @@ typedef struct t_bufferID {
 	GLuint vertexBuffer;
 	GLuint colorBuffer;
 	GLuint uvBuffer;
+	GLuint textureID;
 	std::vector<GLfloat>* vertices;
 	std::vector<t_face>* faces;
 	std::vector<t_uv>* uv;
-	t_bufferID() : vertexArrayID(0), programID(0), MatrixID(0), vertexBuffer(0), colorBuffer(0), uvBuffer(0), vertices(), faces(), uv() {};
+	t_bufferID() :  vertexArrayID(0), programID(0), MatrixID(0), vertexBuffer(0), colorBuffer(0), uvBuffer(0), textureID(0), vertices(), faces(), uv() {};
 
 } t_bufferID;

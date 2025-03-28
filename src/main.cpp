@@ -1,7 +1,5 @@
 #include "../include/scop.hpp"
 
-//faire systeme texture changement
-
 void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_bufferID& bufferID) {
 	bufferID.vertices = &parser.getVertices();
 	bufferID.faces = &parser.getFaces();
@@ -19,7 +17,13 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-	// glDeleteTextures(1, &texture);
+	glDeleteTextures(1, &bufferID.textureID);
+	glDeleteProgram(bufferID.programID);
+	glDeleteVertexArrays(1, &bufferID.vertexArrayID);
+	glDeleteBuffers(1, &bufferID.vertexBuffer);
+	glDeleteBuffers(1, &bufferID.colorBuffer);
+	glDeleteBuffers(1, &bufferID.uvBuffer);
+
 	glfwDestroyWindow(window);
 	glfwTerminate();
 }

@@ -29,6 +29,10 @@ GL_UNIFORMMATRIX4FV glUniformMatrix4fv = nullptr;
 GL_UNIFORM1I glUniform1i = nullptr;
 GL_GETUNIFORMIV glGetUniformiv = nullptr;
 
+GL_DELETEPROGRAM glDeleteProgram = nullptr;
+GL_DELETEVERTEXARRAYS glDeleteVertexArrays = nullptr;
+GL_DELETEVERTEXBUFFERS glDeleteBuffers = nullptr;
+
 void LoadOpenGLFunctions() {
 	// Load OpenGL functions
 	glGenBuffers = (GL_GENBUFFERS)glXGetProcAddress((const GLubyte*)"glGenBuffers");
@@ -58,4 +62,8 @@ void LoadOpenGLFunctions() {
 	glUniformMatrix4fv = (GL_UNIFORMMATRIX4FV)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
 	glUniform1i = (GL_UNIFORM1I)glXGetProcAddress((const GLubyte*)"glUniform1i");
 	glGetUniformiv = (GL_GETUNIFORMIV)glXGetProcAddress((const GLubyte*)"glGetUniformiv");
+	//delete
+	glDeleteProgram = (GL_DELETEPROGRAM)glXGetProcAddress((const GLubyte*)"glDeleteProgram");
+	glDeleteVertexArrays = (GL_DELETEVERTEXARRAYS)glXGetProcAddress((const GLubyte*)"glDeleteVertexArrays");
+	glDeleteBuffers = (GL_DELETEVERTEXBUFFERS)glXGetProcAddress((const GLubyte*)"glDeleteBuffers");
 }
