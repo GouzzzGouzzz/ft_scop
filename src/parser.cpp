@@ -45,12 +45,6 @@ void Parser::calcBound(){
 		if (z > this->maxZ)
 			this->maxZ = z;
 	}
-
-	std::cout << "minY: " << this->minY << std::endl;
-	std::cout << "maxY: " << this->maxY << std::endl;
-	std::cout << "minZ: " << this->minZ << std::endl;
-	std::cout << "maxZ: " << this->maxZ << std::endl;
-
 }
 
 void Parser::pushUV(int index) {

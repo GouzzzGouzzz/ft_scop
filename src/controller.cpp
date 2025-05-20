@@ -59,6 +59,11 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		toggleTexture();
 	}
 	else if (key == GLFW_KEY_R && action == GLFW_PRESS){
+		GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
+		GLint state;
+		glGetUniformiv(bufferID->programID, val, &state);
+		if (state == GL_FALSE)
+			return ;
 		bufferID->textureID = TextureLoader::cycleTextureDir();
 	}
 }
