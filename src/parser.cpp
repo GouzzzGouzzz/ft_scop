@@ -28,46 +28,64 @@ Parser::Parser(std::string filename) {
 	sort_and_genUv();
 }
 
+void Parser::caclBound(){
+	for (size_t i = 1; i < this->vertices.size(); i += 3) {
+		float y = this->vertices[i];
+		float z = this->vertices[i + 1];
+		if (y < this->minY)
+			this->minY = y;
+		if (y > this->maxY)
+			this->maxY = y;
+		if (z < this->minZ)
+			this->minZ = z;
+		if (z > this->maxZ)
+			this->maxZ = z;
+	}
+}
+
+void Parser::pushUV(int index) {
+	float u, v;
+	u = (this->vertices[index + 1] - minY) / (maxY - minY);
+	v = (this->vertices[index + 2] - minZ) / (maxZ - minZ);
+	u = std::min(std::max(u, 0.001f), 0.999f);
+	v = std::min(std::max(v, 0.001f), 0.999f);
+	uv.push_back({u, v});
+}
+
+void Parser::pushNextThreeVertex(int index, std::vector<GLfloat>& sorted_vertices) {
+	sorted_vertices.push_back(this->vertices[index]);
+	sorted_vertices.push_back(this->vertices[index + 1]);
+	sorted_vertices.push_back(this->vertices[index + 2]);
+}
+
 void Parser::sort_and_genUv() {
 	std::vector<GLfloat> sorted_vertices;
 	int index;
 	sorted_vertices.reserve(this->vertices.size());
-
+	caclBound();
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
-
 		index = (it->v1 - 1) * 3;
-		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-		sorted_vertices.push_back(this->vertices[index]);
-		sorted_vertices.push_back(this->vertices[index + 1]);
-		sorted_vertices.push_back(this->vertices[index + 2]);
+		pushUV(index);
+		pushNextThreeVertex(index, sorted_vertices);
 		index = (it->v2 - 1) * 3;
-		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-		sorted_vertices.push_back(this->vertices[index]);
-		sorted_vertices.push_back(this->vertices[index + 1]);
-		sorted_vertices.push_back(this->vertices[index + 2]);
+		pushUV(index);
+		pushNextThreeVertex(index, sorted_vertices);
 		index = (it->v3 - 1) * 3;
-		uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-		sorted_vertices.push_back(this->vertices[index]);
-		sorted_vertices.push_back(this->vertices[index + 1]);
-		sorted_vertices.push_back(this->vertices[index + 2]);
+		pushUV(index);
+		pushNextThreeVertex(index, sorted_vertices);
+
 		if (it->v4  != 0){
 			index = (it->v1 - 1) * 3;
-			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-			sorted_vertices.push_back(this->vertices[index]);
-			sorted_vertices.push_back(this->vertices[index + 1]);
-			sorted_vertices.push_back(this->vertices[index + 2]);
+			pushUV(index);
+			pushNextThreeVertex(index, sorted_vertices);
 
 			index = (it->v3 - 1) * 3;
-			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-			sorted_vertices.push_back(this->vertices[index]);
-			sorted_vertices.push_back(this->vertices[index + 1]);
-			sorted_vertices.push_back(this->vertices[index + 2]);
+			pushUV(index);
+			pushNextThreeVertex(index, sorted_vertices);
 
 			index = (it->v4 - 1) * 3;
-			uv.push_back({(this->vertices[index+1] + 1.0f) * 0.5f, (this->vertices[index+2] + 1.0f) * 0.5f});
-			sorted_vertices.push_back(this->vertices[index]);
-			sorted_vertices.push_back(this->vertices[index + 1]);
-			sorted_vertices.push_back(this->vertices[index + 2]);
+			pushUV(index);
+			pushNextThreeVertex(index, sorted_vertices);
 		}
 	}
 	this->vertices = sorted_vertices;
