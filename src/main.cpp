@@ -10,6 +10,7 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 	glUseProgram(bufferID.programID);
 	bufferID.MatrixID = glGetUniformLocation(bufferID.programID, "MVP");
 	render.lookAtObj();
+	render.applyRotation();
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

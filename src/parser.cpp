@@ -4,6 +4,10 @@ Parser::Parser(std::string filename) {
 	std::string line;
 	std::ifstream file(filename);
 	this->failed = false;
+	this->minY = FLT_MAX;
+	this->maxY = -FLT_MAX;
+	this->minZ = FLT_MAX;
+	this->maxZ = -FLT_MAX;
 	if (!file.is_open()) {
 		std::cerr << "Failed to open file" << std::endl;
 		this->failed = true;
@@ -29,9 +33,9 @@ Parser::Parser(std::string filename) {
 }
 
 void Parser::calcBound(){
-	for (size_t i = 1; i < this->vertices.size(); i += 3) {
-		float y = this->vertices[i];
-		float z = this->vertices[i + 1];
+	for (size_t i = 0; i < this->vertices.size(); i += 3) {
+		float y = this->vertices[i + 1];
+		float z = this->vertices[i + 2];
 		if (y < this->minY)
 			this->minY = y;
 		if (y > this->maxY)
@@ -41,6 +45,12 @@ void Parser::calcBound(){
 		if (z > this->maxZ)
 			this->maxZ = z;
 	}
+
+	std::cout << "minY: " << this->minY << std::endl;
+	std::cout << "maxY: " << this->maxY << std::endl;
+	std::cout << "minZ: " << this->minZ << std::endl;
+	std::cout << "maxZ: " << this->maxZ << std::endl;
+
 }
 
 void Parser::pushUV(int index) {

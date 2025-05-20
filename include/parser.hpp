@@ -14,10 +14,10 @@ class Parser {
 		std::vector<t_uv>& getUv() ;
 		bool failed;
 	private:
-		float minY = FLT_MAX;
-		float maxY = -FLT_MAX;
-		float minZ = FLT_MAX;
-		float maxZ = -FLT_MAX;
+		float minY;
+		float maxY;
+		float minZ;
+		float maxZ;
 		void sort_and_genUv();
 		void calcBound();
 		void pushUV(int);
