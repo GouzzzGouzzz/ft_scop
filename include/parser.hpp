@@ -19,7 +19,7 @@ class Parser {
 		float minZ = FLT_MAX;
 		float maxZ = -FLT_MAX;
 		void sort_and_genUv();
-		void caclBound();
+		void calcBound();
 		void pushUV(int);
 		void pushNextThreeVertex(int, std::vector<GLfloat>& sorted_vertices);
 		std::vector<GLfloat> vertices;

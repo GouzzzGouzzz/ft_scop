@@ -28,7 +28,7 @@ Parser::Parser(std::string filename) {
 	sort_and_genUv();
 }
 
-void Parser::caclBound(){
+void Parser::calcBound(){
 	for (size_t i = 1; i < this->vertices.size(); i += 3) {
 		float y = this->vertices[i];
 		float z = this->vertices[i + 1];
@@ -47,8 +47,6 @@ void Parser::pushUV(int index) {
 	float u, v;
 	u = (this->vertices[index + 1] - minY) / (maxY - minY);
 	v = (this->vertices[index + 2] - minZ) / (maxZ - minZ);
-	u = std::min(std::max(u, 0.001f), 0.999f);
-	v = std::min(std::max(v, 0.001f), 0.999f);
 	uv.push_back({u, v});
 }
 
@@ -62,7 +60,7 @@ void Parser::sort_and_genUv() {
 	std::vector<GLfloat> sorted_vertices;
 	int index;
 	sorted_vertices.reserve(this->vertices.size());
-	caclBound();
+	calcBound();
 	for (std::vector<t_face>::iterator it = this->faces.begin(); it != this->faces.end(); it++) {
 		index = (it->v1 - 1) * 3;
 		pushUV(index);
