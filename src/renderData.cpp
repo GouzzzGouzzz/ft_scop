@@ -67,6 +67,7 @@ void RenderData::axeZ(double step) {
 }
 
 //Scaling Handling (Zoom in/out)
+//need fix zoom to center of object
 void RenderData::zoomIn(double step) {
 	zoom += step;
 	Scale.scale(zoom, zoom, zoom);

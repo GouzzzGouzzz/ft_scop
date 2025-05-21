@@ -47,10 +47,19 @@ void Parser::calcBound(){
 	}
 }
 
+float clip(double n, double lower, double upper) {
+	return std::max(lower, std::min(n, upper));
+}
+
 void Parser::pushUV(int index) {
 	float u, v;
 	u = (this->vertices[index + 1] - minY) / (maxY - minY);
 	v = (this->vertices[index + 2] - minZ) / (maxZ - minZ);
+	//this is some weird magic, but it avoid the texture to be bleeding
+	//by adding a small offset to the uv coordinates to stay within texture bounds
+	//(apparently it is due to BMP format)
+	u = clip(u, 0.11f, 0.9f);
+	v = clip(v, 0.11f, 0.9f);
 	uv.push_back({u, v});
 }
 
