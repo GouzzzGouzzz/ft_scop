@@ -39,6 +39,7 @@ GLuint TextureLoader::cycleTextureDir(){
 
 //return a texture ID to use with opegGL
 //load a BMP file using our custom loader
+//https://stackoverflow.com/questions/9296059/read-pixel-value-in-bmp-file
 GLuint TextureLoader::loadTexture(const char* imagepath){
 	char header[54];
 	unsigned int dataPos;
@@ -68,9 +69,9 @@ GLuint TextureLoader::loadTexture(const char* imagepath){
 	if (dataPos == 0)
 		dataPos = 54;
 	data = new unsigned char[imageSize];
+	file.seekg(dataPos, std::ios::beg);
 	file.read((char*)data, imageSize);
 	file.close();
-
 
 	glDeleteTextures(1, &latestTexture);
 	glGenTextures(1, &latestTexture);
