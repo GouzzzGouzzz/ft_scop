@@ -47,10 +47,6 @@ void Parser::calcBound(){
 	}
 }
 
-float clip(double n, double lower, double upper) {
-	return std::max(lower, std::min(n, upper));
-}
-
 void Parser::pushUV(int index) {
 	float u, v;
 	u = (this->vertices[index + 1] - minY) / (maxY - minY);
