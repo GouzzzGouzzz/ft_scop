@@ -60,6 +60,7 @@ int main(int ac, char **av) {
 	std::string filename = av[1];
 	if (filename.find(".obj") == std::string::npos || filename.rfind(".") != filename.find(".") || filename.find(".obj") + 4 != filename.length()) {
 		std::cerr << "Invalid file format" << std::endl;
+		std::cerr << "Usage: " << av[0] << " <filename>.obj" << std::endl;
 		return -1;
 	}
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
