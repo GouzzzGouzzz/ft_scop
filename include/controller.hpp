@@ -15,6 +15,9 @@ class Controller {
 		static void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 		static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 		static void mouseMotionCallback(GLFWwindow* window, double xpos, double ypos);
+		static bool isTextureEnabled();
+		static bool isTransitioning();
+		static void setTransitioning(bool state);
 
 	private:
 		static RenderData* render;
@@ -22,4 +25,6 @@ class Controller {
 		static double lastX, lastY;
 		static bool isRightDrag;
 		static uint verticesSize;
-};
+		static bool textureEnabled;
+		static bool transitioning;
+	};

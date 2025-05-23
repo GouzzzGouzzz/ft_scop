@@ -27,6 +27,7 @@ GL_DELETESHADER glDeleteShader = nullptr;
 GL_GETUNIFORMLOCATION glGetUniformLocation = nullptr;
 GL_UNIFORMMATRIX4FV glUniformMatrix4fv = nullptr;
 GL_UNIFORM1I glUniform1i = nullptr;
+GL_UNIFORM1F glUniform1f = nullptr;
 GL_GETUNIFORMIV glGetUniformiv = nullptr;
 
 GL_DELETEPROGRAM glDeleteProgram = nullptr;
@@ -61,6 +62,7 @@ void LoadOpenGLFunctions() {
 	glGetUniformLocation = (GL_GETUNIFORMLOCATION)glXGetProcAddress((const GLubyte*)"glGetUniformLocation");
 	glUniformMatrix4fv = (GL_UNIFORMMATRIX4FV)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
 	glUniform1i = (GL_UNIFORM1I)glXGetProcAddress((const GLubyte*)"glUniform1i");
+	glUniform1f = (GL_UNIFORM1F)glXGetProcAddress((const GLubyte*)"glUniform1f");
 	glGetUniformiv = (GL_GETUNIFORMIV)glXGetProcAddress((const GLubyte*)"glGetUniformiv");
 	//delete
 	glDeleteProgram = (GL_DELETEPROGRAM)glXGetProcAddress((const GLubyte*)"glDeleteProgram");

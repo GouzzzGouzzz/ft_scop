@@ -6,13 +6,9 @@ in vec3 fragmentColor;
 in vec2 UV;
 
 uniform sampler2D textureSampler;
-uniform bool useTexture;
+uniform float mixFactor;
 
 void main(){
-	if (!useTexture){
-		color = fragmentColor;
-	}
-	else{
-		color = texture(textureSampler, UV).rgb;
-	}
+	vec3 texColor = texture(textureSampler, UV).rgb;
+	color = mix(fragmentColor, texColor, mixFactor);
 }

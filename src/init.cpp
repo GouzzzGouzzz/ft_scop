@@ -5,6 +5,9 @@ static void initTexture(GLuint programID, GLuint& textureID){
 	glUniform1i(glGetUniformLocation(programID, "myTextureSampler"), 0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	//We start without texture
+	glUniform1f(glGetUniformLocation(programID, "mixFactor"), 0.0f);
 }
 
 static void initVertex(GLuint* arrayID, GLuint* buffer, std::vector<GLfloat>& vertices){

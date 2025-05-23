@@ -11,9 +11,32 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 	bufferID.MatrixID = glGetUniformLocation(bufferID.programID, "MVP");
 	render.lookAtObj();
 	render.applyRotation();
+	float mixFactor = 0.0f;
+	double lastTime = glfwGetTime();
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		if (Controller::isTransitioning()) {
+			double currentTime = glfwGetTime();
+			double deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
+			if (Controller::isTextureEnabled()) {
+				mixFactor += 0.65f * deltaTime;
+				if (mixFactor >= 1.0f) {
+					mixFactor = 1.0f;
+					Controller::setTransitioning(false);
+				}
+				glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
+			}
+			else {
+				mixFactor -= 0.65f * deltaTime;
+				if (mixFactor <= 0.0f) {
+					mixFactor = 0.0f;
+					Controller::setTransitioning(false);
+				}
+				glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
+			}
+		}
 		drawAll(bufferID, render);
 		glfwSwapBuffers(window);
 		glfwPollEvents();

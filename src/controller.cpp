@@ -6,6 +6,8 @@ double Controller::lastX = 0.0;
 double Controller::lastY = 0.0;
 bool Controller::isRightDrag = false;
 uint Controller::verticesSize = 0;
+bool Controller::textureEnabled = false;
+bool Controller::transitioning = false;
 
 Controller::Controller(RenderData& render,uint verticesSize, t_bufferID& bufferID){
 	this->render = &render;
@@ -46,10 +48,7 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 	else if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GLFW_TRUE);
 	else if (key == GLFW_KEY_T && action == GLFW_PRESS){
-		GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
-		GLint state;
-		glGetUniformiv(bufferID->programID, val, &state);
-		if (state == GL_TRUE)
+		if (textureEnabled)
 			return ;
 		std::vector<GLfloat> buffer = Color::cycleColor(verticesSize);
 		glBindBuffer(GL_ARRAY_BUFFER, bufferID->colorBuffer);
@@ -59,10 +58,7 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		toggleTexture();
 	}
 	else if (key == GLFW_KEY_R && action == GLFW_PRESS){
-		GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
-		GLint state;
-		glGetUniformiv(bufferID->programID, val, &state);
-		if (state == GL_FALSE)
+		if (textureEnabled == GL_FALSE)
 			return ;
 		bufferID->textureID = TextureLoader::cycleTextureDir();
 	}
@@ -116,15 +112,28 @@ void Controller::mouseMotionCallback(GLFWwindow* window, double xpos, double ypo
 }
 
 void Controller::toggleTexture(){
-	GLint val = glGetUniformLocation(bufferID->programID, "useTexture");
-	GLint state;
-	glGetUniformiv(bufferID->programID, val, &state);
-	if (state == GL_TRUE){
+	if (transitioning == true){
+		std::cout << "Transitioning . . ." << std::endl;
+		return ;
+	}
+	if (textureEnabled == true){
 		std::cout << "Texture is now off" << std::endl;
-		glUniform1i(glGetUniformLocation(bufferID->programID, "useTexture"), GL_FALSE);
+		textureEnabled = false;
 	}
 	else{
 		std::cout << "Texture is now on" << std::endl;
-		glUniform1i(glGetUniformLocation(bufferID->programID, "useTexture"), GL_TRUE);
+		textureEnabled = true;
 	}
+	transitioning = true;
+}
+
+bool Controller::isTextureEnabled(){
+	return textureEnabled;
+}
+
+bool Controller::isTransitioning(){
+	return transitioning;
+}
+void Controller::setTransitioning(bool state){
+	transitioning = state;
 }
