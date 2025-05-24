@@ -63,16 +63,19 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		bufferID->textureID = TextureLoader::cycleTextureDir();
 	}
 }
+//Doesn't really works as expected, since it is not needed
+//i disabled it by commenting out the code
 
 void Controller::scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
 	(void)xoffset;
 	(void)window;
-	if (yoffset > 0) {
-		render->zoomIn(1);
-	}
-	else {
-		render->zoomOut(1);
-	}
+	(void)yoffset;
+	// if (yoffset > 0) {
+	// 	render->zoomIn(1);
+	// }
+	// else {
+	// 	render->zoomOut(1);
+	// }
 }
 
 void Controller::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods){
