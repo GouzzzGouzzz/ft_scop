@@ -4,16 +4,23 @@ GLuint TextureLoader::latestTexture = 0;
 
 GLuint TextureLoader::cycleTextureDir(){
 	static uint index = 0;
-	static std::string path = "textures/";
+	static const std::string path = "textures/";
 	static std::vector<std::string> files;
+	DIR* dir = opendir(path.c_str());
+	struct dirent* entry;
+	if (!dir){
+		std::cerr << "Could not open texture dir" << std::endl;
+		return 0;
+	}
 	if (files.size() == 0){
-		for (const std::filesystem::__cxx11::directory_entry& entry : std::filesystem::directory_iterator(path)) {
-			if (!entry.is_directory()) {
-				if (entry.path().filename().string().find(".bmp") != std::string::npos) {
-					files.push_back(entry.path().filename().string());
-				}
+		while ((entry = readdir(dir)) != nullptr) {
+			if (std::strcmp(entry->d_name, ".") == 0 || std::strcmp(entry->d_name, "..") == 0)
+				continue;
+			if (std::strstr(entry->d_name, ".bmp") != NULL) {
+				files.push_back(entry->d_name);
 			}
 		}
+		closedir(dir);
 	}
 	if (files.size() == 0){
 		std::cerr << "No texture found in textures directory" << std::endl;
@@ -28,14 +35,19 @@ GLuint TextureLoader::cycleTextureDir(){
 			return 0;
 		}
 		texture = loadTexture((path + files[index]).c_str());
-		if (texture != 0)
-			std::cout << "loaded texute : " << files[index] << std::endl;
-		index++;
+		if (texture != 0){
+			std::cout << "loaded texture : " << files[index] << std::endl;
+			index++;
+		}
 		if (index == files.size())
+		{
 			index = 0;
+		}
+
 	} while (texture == 0);
 	return texture;
 }
+
 
 //return a texture ID to use with opegGL
 //load a BMP file using our custom loader
@@ -83,5 +95,6 @@ GLuint TextureLoader::loadTexture(const char* imagepath){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	delete[] data;
+
 	return latestTexture;
 }

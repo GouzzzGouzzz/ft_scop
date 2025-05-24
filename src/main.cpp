@@ -21,7 +21,7 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 			double deltaTime = currentTime - lastTime;
 			lastTime = currentTime;
 			if (Controller::isTextureEnabled()) {
-				mixFactor += 0.65f * deltaTime;
+				mixFactor += 0.30f * deltaTime;
 				if (mixFactor >= 1.0f) {
 					mixFactor = 1.0f;
 					Controller::setTransitioning(false);
@@ -29,7 +29,7 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 				glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
 			}
 			else {
-				mixFactor -= 0.65f * deltaTime;
+				mixFactor -= 0.30f * deltaTime;
 				if (mixFactor <= 0.0f) {
 					mixFactor = 0.0f;
 					Controller::setTransitioning(false);
@@ -40,6 +40,7 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 		drawAll(bufferID, render);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	}
 	glDeleteTextures(1, &bufferID.textureID);
 	glDeleteProgram(bufferID.programID);

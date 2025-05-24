@@ -6,7 +6,7 @@ Color::~Color() {};
 
 std::vector<GLfloat> Color::cycleColor(uint size){
 	static int cycleIndex = 0;
-	int reset;
+	int reset = 0;
 	int offset = 0;
 	std::vector<GLfloat> color;
 	std::vector<std::vector<float>> grayScale = {
