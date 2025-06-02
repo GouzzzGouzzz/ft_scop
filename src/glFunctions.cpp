@@ -23,7 +23,7 @@ GL_GETPROGRAMINFOLOG glGetProgramInfoLog = nullptr;
 GL_USEPROGRAM glUseProgram = nullptr;
 GL_DETACHSHADER glDetachShader = nullptr;
 GL_DELETESHADER glDeleteShader = nullptr;
-//Idk
+//Uniform and delete
 GL_GETUNIFORMLOCATION glGetUniformLocation = nullptr;
 GL_UNIFORMMATRIX4FV glUniformMatrix4fv = nullptr;
 GL_UNIFORM1I glUniform1i = nullptr;

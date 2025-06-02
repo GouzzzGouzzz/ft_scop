@@ -1,6 +1,10 @@
 #include "../include/scop.hpp"
 #include <sstream>
 
+//From openGL tutorial
+//https://www.opengl-tutorial.org/beginners-tutorials/tutorial-2-the-first-triangle/#shader-compilation
+//It read the shaders files, compile them and link them to our program
+// It returns the program ID to be use later
 GLuint LoadShaders(const char * vertex_file_path,const char * fragment_file_path){
 
 	// Create the shaders

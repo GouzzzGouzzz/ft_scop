@@ -1,5 +1,28 @@
 #include "../include/scop.hpp"
 
+void textureTransition(float& mixFactor, t_bufferID& bufferID, double& lastTime) {
+	if (Controller::isTransitioning()) {
+		double currentTime = glfwGetTime();
+		double deltaTime = currentTime - lastTime;
+		lastTime = currentTime;
+		if (Controller::isTextureEnabled()) {
+			mixFactor += 0.65f * deltaTime;
+			if (mixFactor >= 1.0f) {
+				mixFactor = 1.0f;
+				Controller::setTransitioning(false);
+			}
+		}
+		else {
+			mixFactor -= 0.65f * deltaTime;
+			if (mixFactor <= 0.0f) {
+				mixFactor = 0.0f;
+				Controller::setTransitioning(false);
+			}
+		}
+	}
+	glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
+}
+
 void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_bufferID& bufferID) {
 	bufferID.vertices = &parser.getVertices();
 	bufferID.faces = &parser.getFaces();
@@ -16,27 +39,7 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (Controller::isTransitioning()) {
-			double currentTime = glfwGetTime();
-			double deltaTime = currentTime - lastTime;
-			lastTime = currentTime;
-			if (Controller::isTextureEnabled()) {
-				mixFactor += 0.65f * deltaTime;
-				if (mixFactor >= 1.0f) {
-					mixFactor = 1.0f;
-					Controller::setTransitioning(false);
-				}
-				glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
-			}
-			else {
-				mixFactor -= 0.65f * deltaTime;
-				if (mixFactor <= 0.0f) {
-					mixFactor = 0.0f;
-					Controller::setTransitioning(false);
-				}
-				glUniform1f(glGetUniformLocation(bufferID.programID, "mixFactor"), mixFactor);
-			}
-		}
+		textureTransition(mixFactor, bufferID, lastTime);
 		drawAll(bufferID, render);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
