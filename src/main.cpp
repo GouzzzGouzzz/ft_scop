@@ -43,7 +43,6 @@ void renderingLoop(GLFWwindow* window, Parser& parser, RenderData& render, t_buf
 		textureTransition(mixFactor, bufferID, lastTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
 	}
 	glDeleteTextures(1, &bufferID.textureID);
 	glDeleteProgram(bufferID.programID);

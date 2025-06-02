@@ -63,9 +63,9 @@ void Controller::keyCallback(GLFWwindow* window, int key, int scancode, int acti
 		bufferID->textureID = TextureLoader::cycleTextureDir();
 	}
 }
+
 //Doesn't really works as expected, since it is not needed
 //i disabled it by commenting out the code
-
 void Controller::scrollCallback(GLFWwindow* window, double xoffset, double yoffset){
 	(void)xoffset;
 	(void)window;
