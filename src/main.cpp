@@ -5,6 +5,11 @@ void textureTransition(float& mixFactor, t_bufferID& bufferID, double& lastTime)
 		double currentTime = glfwGetTime();
 		double deltaTime = currentTime - lastTime;
 		lastTime = currentTime;
+		//avoid getting too high deltaTime
+		//causing the transtion to be instant or way too fast
+		//this is a workaround, could be improved to use a fixed timestep
+		if (deltaTime > 0.016)
+			deltaTime = 0.016;
 		if (Controller::isTextureEnabled()) {
 			mixFactor += 0.65f * deltaTime;
 			if (mixFactor >= 1.0f) {
