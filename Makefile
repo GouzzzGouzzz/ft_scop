@@ -1,6 +1,6 @@
 NAME=scop
 CXX=g++
-CXXFLAGS=-g -Wall -Werror -Wextra #-std=c++98
+CXXFLAGS=-g -Wall -Werror -Wextra
 CXXLINKFLAGS=-lGL -lglfw -I/usr/include
 OBJ_DIR=obj
 SRC_DIR=src

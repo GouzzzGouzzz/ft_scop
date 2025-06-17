@@ -64,40 +64,6 @@ Parser::Parser(std::string filename) {
 	sort_and_genUv();
 }
 
-// Parser::Parser(std::string filename) {
-// 	std::string line;
-// 	std::ifstream file(filename);
-// 	this->failed = false;
-// 	this->minY = FLT_MAX;
-// 	this->maxY = -FLT_MAX;
-// 	this->minZ = FLT_MAX;
-// 	this->maxZ = -FLT_MAX;
-// 	if (!file.is_open()) {
-// 		std::cerr << "Failed to open file" << std::endl;
-// 		this->failed = true;
-// 		return ;
-// 	}
-
-// 	while (std::getline(file, line)) {
-// 		if (line[0] == 'v' && line[1] == ' ') {
-// 			GLfloat x,y,z;
-// 			sscanf(line.c_str(), "v %f %f %f", &x, &y, &z);
-// 			this->vertices.push_back(x);
-// 			this->vertices.push_back(y);
-// 			this->vertices.push_back(z);
-// 			std::cout << "vertex : " << x << y << z << std::endl;
-// 		}
-// 		if (line[0] == 'f' && line[1] == ' ') {
-// 			t_face face;
-// 			sscanf(line.c_str(), "f %d %d %d %d", &face.v1, &face.v2, &face.v3, &face.v4);
-// 			std::cout << "face : " << face.v1 << face.v2 << face.v3 << face.v4 << std::endl;
-// 			this->faces.push_back(face);
-// 		}
-// 	}
-// 	file.close();
-// 	sort_and_genUv();
-// }
-
 void Parser::calcBound(){
 	for (size_t i = 0; i < this->vertices.size(); i += 3) {
 		float y = this->vertices[i + 1];
