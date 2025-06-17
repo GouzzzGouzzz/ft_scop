@@ -1,7 +1,7 @@
 NAME=scop
 CXX=g++
 CXXFLAGS=-g -Wall -Werror -Wextra
-CXXLINKFLAGS=-lGL -lglfw -I/usr/include
+CXXLINKFLAGS=-lGL -lglfw
 OBJ_DIR=obj
 SRC_DIR=src
 FILES=main.cpp\
