@@ -1,8 +1,7 @@
 NAME=scop
-TESTNAME=test
 CXX=g++
-CXXFLAGS=-g -Wall -Werror -Wextra
-CXXLINKFLAGS=-lglfw -lGL
+CXXFLAGS=-g -Wall -Werror -Wextra #-std=c++98
+CXXLINKFLAGS=-lGL -lglfw -I/usr/include
 OBJ_DIR=obj
 SRC_DIR=src
 FILES=main.cpp\
@@ -39,8 +38,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
-	rm -f $(TESTNAME)
 
 re: fclean all
 
-.PHONY: all re clean fclean test
+.PHONY: all re clean fclean

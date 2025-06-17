@@ -1,0 +1,11 @@
+v 1.0 0.0      // Too few values (missing one coordinate)
+v 1.0 0.0 0.0 1.0  // Too many values
+v1.0 0.0 0.0       // No space after 'v'
+v 1.0, 0.0, 0.0    // Comma-separated values
+v a b c            // Non-numeric values
+
+f 1 2              // Too few indices
+f 1 2 3 4 5        // Too many indices
+f 1/1 2/2 3/3 4/4  // Texture/normal format not supported
+f1 2 3 4           // No space after 'f'
+f one two three four // Non-integer values

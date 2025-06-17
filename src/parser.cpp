@@ -15,22 +15,88 @@ Parser::Parser(std::string filename) {
 	}
 
 	while (std::getline(file, line)) {
-		if (line[0] == 'v' && line[1] == ' ') {
+		std::stringstream stream(line);
+		std::string type;
+
+		stream >> type;
+		if (type == "v"){
 			GLfloat x,y,z;
-			sscanf(line.c_str(), "v %f %f %f", &x, &y, &z);
+			stream >> x >> y >> z;
+			if (stream.fail()){
+				this->failed = true;
+				return ;
+			}
 			this->vertices.push_back(x);
-			this->vertices.push_back(y);
-			this->vertices.push_back(z);
+ 			this->vertices.push_back(y);
+ 			this->vertices.push_back(z);
 		}
-		if (line[0] == 'f' && line[1] == ' ') {
+		else if (type == "f"){
 			t_face face;
-			sscanf(line.c_str(), "f %d %d %d %d", &face.v1, &face.v2, &face.v3, &face.v4);
+			std::vector<int> totalValue;
+			int val;
+			while (stream >> val){
+				totalValue.push_back(val);
+			}
+			if (totalValue.size() < 3 || totalValue.size() > 4){
+				this->failed = true;
+				return ;
+			}
+			if (totalValue.size() == 3){
+				face.v1 = totalValue[0];
+				face.v2 = totalValue[1];
+				face.v3 = totalValue[2];
+				face.v4 = 0;
+			}
+			else if (totalValue.size() == 4){
+				face.v1 = totalValue[0];
+				face.v2 = totalValue[1];
+				face.v3 = totalValue[2];
+				face.v4 = totalValue[3];
+			}
+			else{
+				this->failed = true;
+				return ;
+			}
 			this->faces.push_back(face);
 		}
 	}
 	file.close();
 	sort_and_genUv();
 }
+
+// Parser::Parser(std::string filename) {
+// 	std::string line;
+// 	std::ifstream file(filename);
+// 	this->failed = false;
+// 	this->minY = FLT_MAX;
+// 	this->maxY = -FLT_MAX;
+// 	this->minZ = FLT_MAX;
+// 	this->maxZ = -FLT_MAX;
+// 	if (!file.is_open()) {
+// 		std::cerr << "Failed to open file" << std::endl;
+// 		this->failed = true;
+// 		return ;
+// 	}
+
+// 	while (std::getline(file, line)) {
+// 		if (line[0] == 'v' && line[1] == ' ') {
+// 			GLfloat x,y,z;
+// 			sscanf(line.c_str(), "v %f %f %f", &x, &y, &z);
+// 			this->vertices.push_back(x);
+// 			this->vertices.push_back(y);
+// 			this->vertices.push_back(z);
+// 			std::cout << "vertex : " << x << y << z << std::endl;
+// 		}
+// 		if (line[0] == 'f' && line[1] == ' ') {
+// 			t_face face;
+// 			sscanf(line.c_str(), "f %d %d %d %d", &face.v1, &face.v2, &face.v3, &face.v4);
+// 			std::cout << "face : " << face.v1 << face.v2 << face.v3 << face.v4 << std::endl;
+// 			this->faces.push_back(face);
+// 		}
+// 	}
+// 	file.close();
+// 	sort_and_genUv();
+// }
 
 void Parser::calcBound(){
 	for (size_t i = 0; i < this->vertices.size(); i += 3) {
