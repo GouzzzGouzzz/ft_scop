@@ -81,12 +81,22 @@ void Parser::calcBound(){
 
 void Parser::pushUV(int index) {
 	float u, v;
+	if ((size_t) index > this->vertices.size() - 3) {
+		std::cerr << "Parser failed : Index out of bounds, continuing ..." << std::endl;
+		this->failed = true;
+		return;
+	}
 	u = (this->vertices[index + 1] - minY) / (maxY - minY);
 	v = (this->vertices[index + 2] - minZ) / (maxZ - minZ);
 	uv.push_back({u, v});
 }
 
 void Parser::pushNextThreeVertex(int index, std::vector<GLfloat>& sorted_vertices) {
+	if ((size_t) index > this->vertices.size() - 3) {
+		std::cerr << "Parser failed : Index out of bounds, continuing ..." << std::endl;
+		this->failed = true;
+		return;
+	}
 	sorted_vertices.push_back(this->vertices[index]);
 	sorted_vertices.push_back(this->vertices[index + 1]);
 	sorted_vertices.push_back(this->vertices[index + 2]);
